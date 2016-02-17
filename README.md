@@ -1,70 +1,51 @@
-###################
-What is CodeIgniter
-###################
+# Online Betting System 
+Online Betting System Web Service
+Environment
+===============
+* Centos v7
+* Mongodb v3.0.8
 
-CodeIgniter is an Application Development Framework - a toolkit - for people
-who build web sites using PHP. Its goal is to enable you to develop projects
-much faster than you could if you were writing code from scratch, by providing
-a rich set of libraries for commonly needed tasks, as well as a simple
-interface and logical structure to access these libraries. CodeIgniter lets
-you creatively focus on your project by minimizing the amount of code needed
-for a given task.
+Installation Environment
+===============
+**CentOS**
+* Install Apache
+```
+sudo yum install httpd
+sudo yum install php
+sudo chkconfig httpd on
+sudo service httpd start
 
-*******************
-Release Information
-*******************
+```
+* Install MongoDB
+```
+cd /etc/yum.repos.d
+vi mongodb.repo
+	[MongoDB]
+	name=MongoDB Repository
+	baseurl=http://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/3.0/x86_64/
+	gpgcheck=0
+	enabled=1
+sudo yum install -y mongodb-10gen-server
+sudo yum install -y mongodb-org
+sudo chkconfig mongod on
+sudo service mongod start
 
-This repo contains in-development code for future releases. To download the
-latest stable release please visit the `CodeIgniter Downloads
-<http://www.codeigniter.com/download>`_ page.
+```
+* Configure MongoDb with Apache
+```
+sudo yum install -y gcc php-pear php-devel
+sudo pecl install mongo
+sudo vi /etc/php.ini
+	extension = mongo.so
+sudo service httpd restart
+sudo /usr/sbin/setsebool -P httpd_can_network_connect 1
+```
 
-**************************
-Changelog and New Features
-**************************
-
-You can find a list of all changes for each release in the `user
-guide change log <https://github.com/bcit-ci/CodeIgniter/blob/develop/user_guide_src/source/changelog.rst>`_.
-
-*******************
-Server Requirements
-*******************
-
-PHP version 5.4 or newer is recommended.
-
-It should work on 5.2.4 as well, but we strongly advise you NOT to run
-such old versions of PHP, because of potential security and performance
-issues, as well as missing features.
-
-************
-Installation
-************
-
-Please see the `installation section <http://www.codeigniter.com/user_guide/installation/index.html>`_
-of the CodeIgniter User Guide.
-
-*******
-License
-*******
-
-Please see the `license
-agreement <https://github.com/bcit-ci/CodeIgniter/blob/develop/user_guide_src/source/license.rst>`_.
-
-*********
-Resources
-*********
-
--  `User Guide <http://www.codeigniter.com/docs>`_
--  `Language File Translations <https://github.com/bcit-ci/codeigniter3-translations>`_
--  `Community Forums <http://forum.codeigniter.com/>`_
--  `Community Wiki <https://github.com/bcit-ci/CodeIgniter/wiki>`_
--  `Community IRC <http://www.codeigniter.com/irc>`_
-
-Report security issues to our `Security Panel <mailto:security@codeigniter.com>`_
-or via our `page on HackerOne <https://hackerone.com/codeigniter>`_, thank you.
-
-***************
-Acknowledgement
-***************
-
-The CodeIgniter team would like to thank EllisLab, all the
-contributors to the CodeIgniter project and you, the CodeIgniter user.
+Installation Project
+===============
+```
+clone project from https://github.com/mapring/SocialBusinessWS
+	go to project/sb_application/config
+	rename config.php.txt 		-> config-local.php
+	rename constants.php.txt 	-> constants-local.php
+	rename mongodb.php.txt 		-> mongodb-local.php
