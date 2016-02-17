@@ -44,8 +44,8 @@ sudo /usr/sbin/setsebool -P httpd_can_network_connect 1
 Installation Project
 ===============
 ```
-clone project from https://github.com/mapring/SocialBusinessWS
-	go to project/sb_application/config
+clone project https://github.com/mapring/OnlineBettingSystemServer
+	go to project/application/config
 	rename config.php.txt 		-> config-local.php
 	rename constants.php.txt 	-> constants-local.php
 	rename mongodb.php.txt 		-> mongodb-local.php
