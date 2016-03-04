@@ -85,6 +85,46 @@ defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automat
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 
 
-// Define table constant
 
-define('TABLE_USER', 'user');
+// ********** Devoper Constants **************
+// 
+// NIGATIVE CODE
+define('MISSING_PARAM_CODE', 440);
+define('INVALID_USER_ID_CODE', 441);
+define('SERVER_IS_NOT_AVAILABLE_CODE', 442);
+define('INVALID_MEMBER_TYPE', 443);
+define('INVALID_FILE_TYPE', 444);
+define('INVALID_REQUEST', 445);
+define('INVALID_ACCESS_KEY', 446);
+define('DUPLICATE_PRODUCT', 447);
+define('OWNER_ID_DONOT_EXIST', 448);
+define('INVALID_MONGO_ID', 449);
+define('INVALID_CHARACTOR_LENGTH', 450);
+define('PROCESS_FAILS_CODE', 0);
+
+// POSITIVE CODE
+define('SUCCESS_CODE', 1);
+
+// Define table constant
+define('TABLE_PROFILE', 'Profile');
+
+// Encryption key when generate access key
+define('ENCRYPT_KEY', 'Online_Bidding_System');
+
+// Account TYpe
+define('NORMAL', 1);
+define('SILVER', 2);
+define('GOLD', 3);
+define('PLATIUM', 4);
+
+
+// Status of profile
+define('ACTIVE', 1);
+define('DEACTIVE', 0);
+define('SUSPEND', -1);
+
+
+// Type of social , socialType
+define('FACEBOOK', 1);
+define('GOOGLE+', 2);
+
