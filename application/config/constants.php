@@ -107,6 +107,8 @@ define('SUCCESS_CODE', 1);
 
 // Define table constant
 define('TABLE_PROFILE', 'Profile');
+define('TABLE_PRODUCT', 'Product');
+define('TABLE_CURRENCY', 'Currency');
 
 // Encryption key when generate access key
 define('ENCRYPT_KEY', 'Online_Bidding_System');
