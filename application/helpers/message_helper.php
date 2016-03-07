@@ -66,8 +66,19 @@ if (!function_exists('msg_error')) {
     }
 }
 
+if (!function_exists('msg_invalidAccessKey')) {
+    function msg_invalidAccessKey() {
+        $error = array(
+            'code' => PROCESS_FAILS_CODE,
+            'data' => '',
+            'message' => array('code' => INVALID_ACCESS_KEY,'description' => 'Invalid access key')
+        );
+        return $error;
+    }
+}
+
 if (!function_exists('msg_exception')) {
-    function msg_exception($msg_exception) {
+    function msg_exception($msg_eexception) {
         $error = array('code' => PROCESS_FAILS_CODE, 'data' => '', 'message' => array('code' => SERVER_IS_NOT_AVAILABLE_CODE, 'description' => "Server is not reachable."));
         return $error;
     }

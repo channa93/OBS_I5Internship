@@ -1,11 +1,19 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+/* 
+ * @Copy Right Borama Consulting
+ * 
+ * @channa
+ * 
+ * @3/3/2016
+ */
 class ValidationField_model extends CI_Model {
 
     public function __construct(){
         parent::__construct();
-        date_default_timezone_set("UTC");
+       // date_default_timezone_set("UTC");
+        date_default_timezone_set("Asia/Bangkok");
     } 
 
     /**
@@ -50,8 +58,8 @@ class ValidationField_model extends CI_Model {
             'wallet' => 0,
             'hits' => 0,
             'status' => ACTIVE,
-            'createdDate' => date("Y-m-d"),
-            'modifiedDate' => date("Y-m-d")         
+            'createdDate' => date("Y-m-d H:m:s A"),
+            'modifiedDate' => date("Y-m-d H:m:s A")         
         );
         if ($data == FALSE) {
             return $template_fields;

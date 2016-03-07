@@ -1,6 +1,13 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+/* 
+ * @Copy Right Borama Consulting
+ * 
+ * @channa
+ * 
+ * @3/3/2016
+ */
 class General_model extends CI_Model {
 
     public function __construct(){

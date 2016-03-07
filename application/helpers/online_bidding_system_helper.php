@@ -68,3 +68,96 @@ if (!function_exists('generate_access_key')) {
         return base64_encode($key);
     } 
 }
+
+/**
+ * Used to get the base url for later use. i.e: Path to image
+ */
+
+if (!function_exists('base_url')) {
+    function base_url($atRoot=FALSE, $atCore=FALSE, $parse=FALSE){
+        if (isset($_SERVER['HTTP_HOST'])) {
+            $http = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off' ? 'https' : 'http';
+            $hostname = $_SERVER['HTTP_HOST'];
+            $dir =  str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
+
+            $core = preg_split('@/@', str_replace($_SERVER['DOCUMENT_ROOT'], '', realpath(dirname(__FILE__))), NULL, PREG_SPLIT_NO_EMPTY);
+            $core = $core[0];
+
+            $tmplt = $atRoot ? ($atCore ? "%s://%s/%s/" : "%s://%s/") : ($atCore ? "%s://%s/%s/" : "%s://%s%s");
+            $end = $atRoot ? ($atCore ? $core : $hostname) : ($atCore ? $core : $dir);
+            $base_url = sprintf( $tmplt, $http, $hostname, $end );
+        }
+        else $base_url = 'http://localhost/';
+
+        if ($parse) {
+            $base_url = parse_url($base_url);
+            if (isset($base_url['path'])) if ($base_url['path'] == '/') $base_url['path'] = '';
+        }
+
+        return $base_url;
+    }
+}
+
+
+if (!function_exists('validate_file_type')) {
+
+    function validate_file_type($file) {
+
+        $allowedExts = array("gif", "jpeg", "jpg", "png","PNG","JPEG");
+        $allowedType = array("image/gif", "image/jpeg", "image/jpg", "image/pjpeg", "image/x-png", "image/png");
+        $temp = explode(".", $file["name"]);
+        $extension = end($temp);
+
+        if (in_array($file["type"], $allowedType) && ($file["size"] < 4400000) && in_array($extension, $allowedExts)) {
+            return TRUE;
+        }
+        return FALSE;
+    }
+
+}
+if (!function_exists('upload_file')) {
+     function upload_file($path,$file, $sizes = array(100 => 100, 150 => 150, 250 => 250))
+    {
+        try {
+
+            $image_name = $file['name']; 
+            $check_extension = explode('.', $image_name); 
+            $exp = end($check_extension);
+            if (!validate_file_type($file)) {
+                return msg_error('Invalid file type or size', $file);
+            }
+            $full_name = rand(0,9).rand(0,9).rand(0,9).rand(0,9).rand(0,9).rand(0,9).rand(0,9).rand(0,9).round(microtime(true)) . basename($file['name']);
+            $full_name=str_replace(" ","_",$full_name);
+            $full_name=  preg_replace("/( |\+|\|\,|\(|\)|')/", "", $full_name);
+            $full_name=strip_tags($full_name);
+            $full_path = $path .'/'. $full_name;
+           
+            $upload = move_uploaded_file($file["tmp_name"], $full_path); 
+            chmod($full_path, 0777);
+            if ($upload == true) { 
+//                foreach ($sizes as $w => $h) { 
+//                   _resize_image($full_name,$full_path,$w,$h); 
+//                }
+                return $full_name;
+            }
+            return false;
+        } catch (Exception $exc) {
+            return msg_error('Unable to upload.');
+        }
+    }
+}
+
+if (!function_exists('validate_email')) {
+    function validate_email($value){
+         if (!filter_var($value, FILTER_VALIDATE_EMAIL) === false) {
+            return true;
+          } else {
+            return false;
+          }
+    }
+   
+}
+
+
+
+
