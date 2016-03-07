@@ -17,6 +17,28 @@ if (!function_exists('msg_missingParameter')) {
     }
 }
 
+if (!function_exists('invalid_charactor_length')) {
+    function invalid_charactor_length($data, $feild) {
+        $error = array(
+            'code' => PROCESS_FAILS_CODE,
+            'data' => $data,
+            'message' => array('code' => INVALID_CHARACTOR_LENGTH,'description' => 'Oop! You have enter many content for '.$feild)
+        );
+        return $error;
+    }
+}
+
+if (!function_exists('msg_invalidAccessKey')) {
+    function msg_invalidAccessKey() {
+        $error = array(
+            'code' => PROCESS_FAILS_CODE,
+            'data' => '',
+            'message' => array('code' => INVALID_ACCESS_KEY,'description' => 'Invalid access key')
+        );
+        return $error;
+    }
+}
+
 /**
 * used to return the message when success
 * @param  [array] $return_result 
@@ -30,6 +52,24 @@ if (!function_exists('msg_success')) {
             'message' =>array('code' => SUCCESS_CODE,'description' => 'success')
         );
         return $response;
+    }
+}
+
+if (!function_exists('msg_error')) {
+    function msg_error($message, $data=[]) {
+        $error = array(
+            'code' => PROCESS_FAILS_CODE,
+            'data' => $data,
+            'message' => array('code' => PROCESS_FAILS_CODE,'description' => $message)
+        );
+        return $error;
+    }
+}
+
+if (!function_exists('msg_exception')) {
+    function msg_exception($msg_exception) {
+        $error = array('code' => PROCESS_FAILS_CODE, 'data' => '', 'message' => array('code' => SERVER_IS_NOT_AVAILABLE_CODE, 'description' => "Server is not reachable."));
+        return $error;
     }
 }
 

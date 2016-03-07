@@ -108,7 +108,7 @@ define('SUCCESS_CODE', 1);
 // Define table constant
 define('TABLE_PROFILE', 'Profile');
 define('TABLE_PRODUCT', 'Product');
-define('TABLE_CURRENCY', 'Currency');
+define('TABLE_CURRENCY', 'currency');
 
 // Encryption key when generate access key
 define('ENCRYPT_KEY', 'Online_Bidding_System');
@@ -129,4 +129,8 @@ define('SUSPEND', -1);
 // Type of social , socialType
 define('FACEBOOK', 1);
 define('GOOGLE+', 2);
+
+//CHARACTER LENGTH
+define('TITLE_LENGTH_LIMITED', 750);
+define('DESC_LENGTH_LIMITED', 200);
 

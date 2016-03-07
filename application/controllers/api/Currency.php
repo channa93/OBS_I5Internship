@@ -17,53 +17,96 @@ class Currency extends REST_Controller{
         $this->load->model('Currency_model', 'currency');
     }
     
+    private function _require_parameter($input){
+        $checked_param = require_parameter($input);
+        if(!$checked_param){
+            $this->response(msg_missingParameter($checked_param));
+        }
+    }
+
+    private function _check_profile_exist($accessKey, $show_error=1) {
+        $is_exist_profile = authenticate($accessKey);
+        if ($is_exist_profile === FALSE && $show_error) {
+            $this->response(msg_invalidAccessKey());
+        } else {
+            unset($is_exist_profile['_id']);
+            return $is_exist_profile;
+        }
+    }
+    
     public function add_currency_post(){
         $params = array(
+            'accessKey' => $this->post('accessKey'),
             'title' => $this->post('title'),
             'description' => $this->post('description')
         );
+
+        //check profile exist
+        $this->_check_profile_exist($this->post('accessKey'));
+
+        //check required parameter
+        $this->_require_parameter($params);
         
-        //TODO: check accesskey
+        //check length of params
+        if(!check_charactor_length($this->post('title'),TITLE_LENGTH_LIMITED)){
+            $this->response(invalid_charactor_length($this->post('title'), 'title'));
+        }
+        if(!check_charactor_length($this->post('description'), DESC_LENGTH_LIMITED)){
+            $this->response(invalid_charactor_length($this->post('description'), 'description'));
+        }
+
+        $input['title'] = $this->post('title');
+        $input['description'] = $this->post('description');
         
-        //TODO: check require params
-        
-        //TODO: check lenght of params
-        
-        $response = $this->currency->add_currency($params);
+        $response = $this->currency->add_currency($input);
         $this->response($response);
         
     }
     
-    public function get_all_currencies_get(){
+    public function get_all_currencies_post(){
+
+        //TODO: check profile exist
+        $this->_check_profile_exist($this->post('accessKey'));
+
         $response = $this->currency->get_all_currencies();
+
         $this->response($response);
     }
     
     public function update_currency_post(){
         $params = array(
-            '_id' => $this->post('_id'),
             'title' => $this->post('title'),
             'description' => $this->post('description')
         );
         
-        //TODO: check accesskey
+        //check profile exist
+        $this->_check_profile_exist($this->post('accessKey'));
         
-        //TODO: check require params
+        //check require params
+        $this->_require_parameter($params);
         
-        //TODO: check lenght of params
-        
-        $response = $this->currency->update_currency($params);
+        //check length of params
+        if(!check_charactor_length($this->post('title'),TITLE_LENGTH_LIMITED)){
+            $this->response(invalid_charactor_length($this->post('title'), 'title'));
+        }
+        if(!check_charactor_length($this->post('description'), DESC_LENGTH_LIMITED)){
+            $this->response(invalid_charactor_length($this->post('description'), 'description'));
+        }
+
+        //update currency
+        $response = $this->currency->update_currency($this->post('_id'),$params);
+
         $this->response($response);
         
     }
     
     public function delete_currency_post(){
         
-        //TODO: check accesskey
-        
-        //TODO: check require params
-        
+        //check profile exist
+        $this->_check_profile_exist($this->post('accessKey'));
+
         $response = $this->currency->delete_currency($this->post('_id'));
+
         $this->response($response);
         
         
