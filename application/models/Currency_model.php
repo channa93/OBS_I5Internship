@@ -19,8 +19,12 @@ class Currency_model extends CI_Model{
     public function add_currency($currency){
         
         //check for last currency id
-        $total_currency = $this->mongo_db->count(TABLE_CURRENCY);
-        $currency['_id'] = new MongoInt32($total_currency + 1);
+        $total_currency = $this->mongo_db->order_by(array('_id' => -1))->get(TABLE_CURRENCY);
+        if(empty($total_currency)){
+            $currency['_id'] = new MongoInt32(1) ;
+        }else {
+            $currency['_id'] = new MongoInt32($total_currency[0]['_id'] + 1) ;
+        }
 
         try{
             //format data before insert into database
@@ -32,9 +36,10 @@ class Currency_model extends CI_Model{
             if($result){
                 //query to get that newly insert currency
                 $get_currency = $this->mongo_db->where(array('_id' => $result))->get(TABLE_CURRENCY);
+                $get_currency[0]['currencyId'] = $get_currency[0]['_id'];
 
                 //remove field createdDate and modifiedDate before send to client
-                unset($get_currency[0]['createdDate'], $get_currency[0]['modifiedDate']);
+                unset($get_currency[0]['_id'], $get_currency[0]['createdDate'], $get_currency[0]['modifiedDate']);
 
                 //must return an object of currency that just created as {code, data, message}
                 return msg_success($get_currency[0]);
@@ -55,7 +60,8 @@ class Currency_model extends CI_Model{
             $result = [];
 
             foreach($currencies as $obj){
-                unset($obj['createdDate'], $obj['modifiedDate']);
+                $obj['currencyId'] = $obj['_id'];
+                unset($obj['_id'],$obj['createdDate'], $obj['modifiedDate']);
                 array_push($result, $obj);
             }
 
@@ -78,7 +84,8 @@ class Currency_model extends CI_Model{
             //query to get that newly update currency
             if($result){
                 $get_currency = $this->mongo_db->where(array('_id' => new MongoInt32($currency_id)))->get(TABLE_CURRENCY);
-                unset($get_currency[0]['createdDate'], $get_currency[0]['modifiedDate']);
+                $get_currency[0]['currencyId'] = $get_currency[0]['_id'];
+                unset($get_currency[0]['_id'], $get_currency[0]['createdDate'], $get_currency[0]['modifiedDate']);
                 return msg_success($get_currency[0]);
             }else {
                 return msg_error('Unable to update currency');
@@ -91,9 +98,16 @@ class Currency_model extends CI_Model{
     }
     
     public function delete_currency($currency_id){
-        $result = $this->mongo_db->where(array('_id' => new MongoInt32($currency_id)))->delete(TABLE_CURRENCY);
 
-        return msg_success($result);
+        $result = $this->mongo_db->where(array('_id' => new MongoInt32($currency_id)))->get(TABLE_CURRENCY);
+
+        if(!empty($result)){
+            $result = $this->mongo_db->delete(TABLE_CURRENCY);
+            return msg_success($result);
+        }else {
+            return msg_error('Unable to delete currency');
+        }
+
     }
    
 }

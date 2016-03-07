@@ -66,8 +66,6 @@ class ValidationField_model extends CI_Model {
      * @return [array] array of data template
      */
     public function currency($data){
-        //count current currencies document in database
-        $total_currency = $this->mongo_db->count(TABLE_CURRENCY);
 
         $template_fields = array(
             '_id' => new MongoInt32(0),
@@ -79,11 +77,32 @@ class ValidationField_model extends CI_Model {
         if(!$data){
             return $template_fields;
         }
-        $template_fields['_id'] =
+
         $output = $this->_prepare_input($template_fields, $data);
         return $output;
     }
-    
+
+    /**
+     * template for collection category
+     * @param [array] $data
+     * @return [array] array of data template
+     */
+    public function category($data){
+
+        $template_fields = array(
+            '_id' => new MongoInt32(0),
+            'title' => '',
+            'description' => '',
+            'createdDate' => date('Y-m-d H:m:s A'),
+            'modifiedDate' => date('Y-m-d H:m:s A')
+        );
+        if(!$data){
+            return $template_fields;
+        }
+
+        $output = $this->_prepare_input($template_fields, $data);
+        return $output;
+    }
     
     
    

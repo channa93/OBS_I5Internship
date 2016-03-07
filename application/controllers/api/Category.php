@@ -10,16 +10,16 @@ require APPPATH.'/libraries/REST_Controller.php';
  * @3/3/2016
  */
 
-class Currency extends REST_Controller{
+class Category extends REST_Controller{
     
     function __construct(){
         parent:: __construct();
-        $this->load->model('Currency_model', 'currency');
+        $this->load->model('Category_model', 'category');
     }
     
     private function _require_parameter($input){
         $checked_param = require_parameter($input);
-        if($checked_param !== TRUE ){
+        if($checked_param !== TRUE){
             $this->response(msg_missingParameter($checked_param));
         }
     }
@@ -35,8 +35,8 @@ class Currency extends REST_Controller{
     }
 
     private function _check_title_exist(){
-        $all_currencies = $this->mongo_db->get(TABLE_CURRENCY);
-        foreach($all_currencies as $obj){
+        $all_categories = $this->mongo_db->get(TABLE_CATEGORY);
+        foreach($all_categories as $obj){
             if($obj['title'] === $this->post('title')){
                 $this->response(msg_error('This title already exist', $this->post('title')));
             }
@@ -44,15 +44,15 @@ class Currency extends REST_Controller{
     }
 
     private function _check_id_exist(){
-        $all_currencies = $this->mongo_db->get(TABLE_CURRENCY);
-        foreach($all_currencies as $obj){
-            if($obj['_id'] === (int)($this->post('currencyId'))){
-                return (int)($this->post('currencyId'));
+        $all_categories = $this->mongo_db->get(TABLE_CATEGORY);
+        foreach($all_categories as $obj){
+            if($obj['_id'] === (int)($this->post('categoryId'))){
+                return (int)($this->post('categoryId'));
             }
         }
     }
     
-    public function add_currency_post(){
+    public function add_category_post(){
         $params = array(
             'title' => $this->post('title'),
             'description' => $this->post('description')
@@ -66,7 +66,7 @@ class Currency extends REST_Controller{
 
         //check title has existed or not
         $this->_check_title_exist();
-
+        
         //check length of params
         if(!check_charactor_length($this->post('title'),TITLE_LENGTH_LIMITED)){
             $this->response(invalid_charactor_length($this->post('title'), 'title'));
@@ -78,24 +78,24 @@ class Currency extends REST_Controller{
         $input['title'] = $this->post('title');
         $input['description'] = $this->post('description');
         
-        $response = $this->currency->add_currency($input);
+        $response = $this->category->add_category($input);
         $this->response($response);
         
     }
     
-    public function get_all_currencies_post(){
+    public function get_all_categories_post(){
 
         //check profile exist
         $this->_check_profile_exist($this->post('accessKey'));
 
-        $response = $this->currency->get_all_currencies();
+        $response = $this->category->get_all_categories();
 
         $this->response($response);
     }
     
-    public function update_currency_post(){
+    public function update_category_post(){
         $params = array(
-            'currencyId' => $this->post('currencyId'),
+            'categoryId' => $this->post('categoryId'),
             'title' => $this->post('title'),
             'description' => $this->post('description')
         );
@@ -107,9 +107,9 @@ class Currency extends REST_Controller{
         $this->_require_parameter($params);
 
         //check id exist
-        $currencyId = $this->_check_id_exist();
-        if(empty($currencyId)){
-            $this->response(msg_error('This id does not exist', $this->post('currencyId')));
+        $categoryId = $this->_check_id_exist();
+        if(empty($categoryId)){
+            $this->response(msg_error('This id does not exist', $this->post('categoryId')));
         }
 
         //check title has existed or not
@@ -126,17 +126,17 @@ class Currency extends REST_Controller{
         $input['title'] = $this->post('title');
         $input['description'] = $this->post('description');
 
-        //update currency
-        $response = $this->currency->update_currency($currencyId,$input);
+        //update category
+        $response = $this->category->update_category($categoryId,$input);
 
         $this->response($response);
         
     }
     
-    public function delete_currency_post(){
+    public function delete_category_post(){
 
         $params = array(
-            'currencyId' => $this->post('currencyId')
+            'categoryId' => $this->post('categoryId')
         );
 
         $this->_require_parameter($params);
@@ -145,14 +145,15 @@ class Currency extends REST_Controller{
         $this->_check_profile_exist($this->post('accessKey'));
 
         //check id exist
-        $currencyId = $this->_check_id_exist();
-        if(empty($currencyId)){
-            $this->response(msg_error('This id does not exist', $this->post('currencyId')));
+        $categoryId = $this->_check_id_exist();
+        if(empty($categoryId)){
+            $this->response(msg_error('This id does not exist', $this->post('categoryId')));
         }
 
-        $response = $this->currency->delete_currency($currencyId);
+        $response = $this->category->delete_category($categoryId);
 
         $this->response($response);
+
     }
     
     
