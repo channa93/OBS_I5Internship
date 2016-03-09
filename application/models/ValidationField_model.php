@@ -111,6 +111,28 @@ class ValidationField_model extends CI_Model {
         $output = $this->_prepare_input($template_fields, $data);
         return $output;
     }
+
+    /**
+     * template for collection productCondition
+     * @param [array] $data
+     * @return [array] array of data template
+     */
+    public function condition($data){
+
+        $template_fields = array(
+            '_id' => new MongoInt32(0),
+            'title' => '',
+            'description' => '',
+            'createdDate' => date('Y-m-d H:m:s A'),
+            'modifiedDate' => date('Y-m-d H:m:s A')
+        );
+        if(!$data){
+            return $template_fields;
+        }
+
+        $output = $this->_prepare_input($template_fields, $data);
+        return $output;
+    }
     
     
    
