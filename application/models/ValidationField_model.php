@@ -133,6 +133,29 @@ class ValidationField_model extends CI_Model {
         $output = $this->_prepare_input($template_fields, $data);
         return $output;
     }
+
+    /**
+     * template for collection account type
+     * @param [array] $data
+     * @return [array] array of data template
+     */
+    public function accountType($data){
+
+        $template_fields = array(
+            '_id' => new MongoInt32(0),
+            'type' => '',
+            'priceCharge' => (double)(0),
+            'features' => array(),
+            'createdDate' => date('Y-m-d H:m:s A'),
+            'modifiedDate' => date('Y-m-d H:m:s A')
+        );
+        if(!$data){
+            return $template_fields;
+        }
+
+        $output = $this->_prepare_input($template_fields, $data);
+        return $output;
+    }
     
     
    

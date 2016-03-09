@@ -36,7 +36,7 @@ class ProductCondition_model extends CI_Model{
             if($result){
                 //query to get that newly insert condition
                 $get_condition = $this->mongo_db->where(array('_id' => $result))->get(TABLE_CONDITION);
-                $get_condition[0]['currencyId'] = $get_condition[0]['_id'];
+                $get_condition[0]['conditionId'] = $get_condition[0]['_id'];
 
                 //remove field createdDate and modifiedDate before send to client
                 unset($get_condition[0]['_id'], $get_condition[0]['createdDate'], $get_condition[0]['modifiedDate']);
