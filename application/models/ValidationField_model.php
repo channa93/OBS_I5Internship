@@ -59,7 +59,8 @@ class ValidationField_model extends CI_Model {
             'hits' => 0,
             'status' => ACTIVE,
             'createdDate' => date("Y-m-d H:m:s A"),
-            'modifiedDate' => date("Y-m-d H:m:s A")         
+            'modifiedDate' => date("Y-m-d H:m:s A"),
+            'isEdit' => false         
         );
         if ($data == FALSE) {
             return $template_fields;
@@ -148,6 +149,27 @@ class ValidationField_model extends CI_Model {
             'features' => array(),
             'createdDate' => date('Y-m-d H:m:s A'),
             'modifiedDate' => date('Y-m-d H:m:s A')
+        );
+        if(!$data){
+            return $template_fields;
+        }
+
+        $output = $this->_prepare_input($template_fields, $data);
+        return $output;
+    }
+    
+    /* template for collection TransactionHistory
+     * @param [array] $data
+     * @return [array] array of data template
+     */
+    public function transaction_history($data){
+
+        $template_fields = array(
+            '_id' => new MongoId(),
+            'type' => '',
+            'amount' => 0,
+            'profileId' => '',
+            'createdDate' => date('Y-m-d H:m:s A')
         );
         if(!$data){
             return $template_fields;

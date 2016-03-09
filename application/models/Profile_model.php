@@ -99,6 +99,74 @@ class Profile_model extends CI_Model {
         
         
     }
-   
 
+    public function add_interest_category($categoryId,$accessKey){
+        try{
+            $categoryId = new MongoInt32($categoryId);
+            $success = $this->mongo_db->where(array('accessKey' => $accessKey)) ->
+                        push(array('interestCategoryId' => $categoryId)) ->
+                        update(TABLE_PROFILE);
+            return $success;
+        }catch(Exception $e){
+            return msg_exception($e.getMessage());
+        }
+    }
+
+    public function delete_interest_category($categoryId,$accessKey){
+        try{
+            $categoryId = new MongoInt32($categoryId);
+            $success = $this->mongo_db->where(array('accessKey' => $accessKey)) ->
+                        pull('interestCategoryId' , $categoryId) ->
+                        update(TABLE_PROFILE);
+            return $success;
+        }catch(Exception $e){
+            return msg_exception($e.getMessage());
+        }
+    }
+
+    public function get_interest_category($accessKey){
+        try{
+            $data = $this->mongo_db->
+                            where(array('accessKey' => $accessKey)) ->
+                            select(array('interestCategoryId','_id'))->
+                            get(TABLE_PROFILE);
+            $data[0]['userId'] = $data[0]['_id']->{'$id'};
+            unset($data[0]['_id']);
+            return $data[0];
+        }catch(Exception $e){
+            return msg_exception($e.getMessage());
+        }
+    }
+
+    public function get_category_by_id($categoryId){
+        try{
+            $data = $this->mongo_db->
+                            where(array('_id' => $categoryId)) ->
+                            select(array('title','_id'))->
+                            get(TABLE_CATEGORY);
+            //$data[0]['userId'] = $data[0]['_id']->{'$id'};
+            //unset($data[0]['_id']);
+            return $data[0];
+        }catch(Exception $e){
+            return msg_exception($e.getMessage());
+        }
+    }
+
+
+    public function add_money($profile, $sandboxMoney){
+        try{
+            $money_add = $profile['wallet'] + $sandboxMoney;
+            $data = $this->mongo_db->
+                            where(array('accessKey' => $profile['accessKey']))->
+                            set('wallet', $money_add)->
+                            update(TABLE_PROFILE);
+            $data = $this->get_profile_user_by_accessKey($profile['accessKey']);
+            return $data[0];
+        }catch(Exception $e){
+            return msg_exception($e.getMessage());
+        }     
+    }
+
+
+  
 }

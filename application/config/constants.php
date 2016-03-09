@@ -112,6 +112,7 @@ define('TABLE_CURRENCY', 'Currency');
 define('TABLE_CATEGORY', 'Category');
 define('TABLE_CONDITION', 'ProductCondition');
 define('TABLE_ACCOUNT', 'AccountType');
+define('TABLE_TRANSACTION_HISTORY', 'TransactionHistory');
 
 // Encryption key when generate access key
 define('ENCRYPT_KEY', 'Online_Bidding_System');
