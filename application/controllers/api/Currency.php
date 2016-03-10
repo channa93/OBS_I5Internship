@@ -18,7 +18,7 @@ class Currency extends REST_Controller{
     }
     
     private function _require_parameter($input){
-        $checked_param = require_parameter($input);
+        $checked_param = require_parameter($input)kjhkjhkjh;
         if($checked_param !== TRUE ){
             $this->response(msg_missingParameter($checked_param));
         }

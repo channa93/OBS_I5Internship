@@ -36,6 +36,8 @@ class Profile extends REST_Controller{
          $this->response($data);
     }
     
+        /*****Login/Regitser*/
+
     public function login_post(){
         $params = array(
             'socialId' => (string) $this->post('socialId'),
@@ -59,6 +61,8 @@ class Profile extends REST_Controller{
         }    
     }
 
+        /***** Add user */
+
     public function add_user($params) {        
         $user = $this->profile->add_user($params);
         $user[0]['userId'] = $user[0]['_id']->{'$id'};
@@ -67,6 +71,8 @@ class Profile extends REST_Controller{
         $data = msg_success($user); 
         return $this->response($data);
     }
+
+        /*****Edit profile*/
 
     public function edit_profile_post(){
         // check require param accessKey
@@ -148,6 +154,7 @@ class Profile extends REST_Controller{
         return $full_name;
     }
 
+        /*****Add interest category*/
 
     public function add_interest_category_post(){
         // check require param accessKey
@@ -157,14 +164,12 @@ class Profile extends REST_Controller{
         );
         $this->_require_parameter($input);
             // check if that profile is exist with accessKey     
-        $accessKey = $this->post('accessKey');
-        $profile = $this->profile->get_profile_user_by_accessKey($accessKey);
+        $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
          
         if($profile){
-            $categoryId = $input['categoryId'];
-            $status = $this->profile->add_interest_category($categoryId,$accessKey);
+            $status = $this->profile->add_interest_category($input);
             if($status === true){
-                $profile = $this->profile->get_profile_user_by_accessKey($accessKey);
+                $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
                 $this->response(msg_success($profile));
             }else{
                 $this->response(msg_error($status));                
@@ -174,22 +179,22 @@ class Profile extends REST_Controller{
         }
     }
 
+        /*****Remove interest category*/
+
     public function delete_interest_category_post(){
         // check require param accessKey
         $input = array(
             'accessKey' => $this->post('accessKey'),
-            'categoryId' => $this->post('categoryId')
+            'categoryId' => (int) $this->post('categoryId')
         );
         $this->_require_parameter($input);
             // check if that profile is exist with accessKey     
-        $accessKey = $this->post('accessKey');
-        $profile = $this->profile->get_profile_user_by_accessKey($accessKey);
+        $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
          
         if($profile){
-            $categoryId = $input['categoryId'];
-            $status = $this->profile->delete_interest_category($categoryId,$accessKey);
+            $status = $this->profile->delete_interest_category($input);
             if($status === true){
-                $profile = $this->profile->get_profile_user_by_accessKey($accessKey);
+                $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
                 $this->response(msg_success($profile));
             }else{
                 $this->response(msg_error($status));                
@@ -198,6 +203,8 @@ class Profile extends REST_Controller{
            $this->response(msg_invalidAccessKey());
         }
     }
+
+        /*****Get interest category*/
 
     public function get_interest_category_post(){
         // check require param accessKey
@@ -232,7 +239,7 @@ class Profile extends REST_Controller{
         return $categoryList;
     }
 
-
+        /*****Add sanbox money*/
     public function add_money_post(){
         // check require param accessKey
         $input = array(
@@ -264,5 +271,64 @@ class Profile extends REST_Controller{
         // var_dump($record);die;
         $this->transaction_history->add_transaction_history($record);
     }
+
+        
+        /*****Add subscriber to user*/
+    public function add_subscriber_post(){
+        // check require param accessKey
+        $input = array(
+            'accessKey' => $this->post('accessKey'),
+            'subscriberId' => $this->post('subscriberId')
+        );
+        $this->_require_parameter($input);
+
+        // check if that profile is exist with accessKey      
+        $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
+       
+        if($profile){       
+            $status = $this->profile->add_subscriber($input);
+            if($status === true){
+                $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
+                $this->response(msg_success($profile));
+            }else{
+                $this->response(msg_error($status));                
+            }
+        }else{
+           $this->response(msg_invalidAccessKey());
+        }
+    }
+
+        /*****Remove subscriber*/
+
+    public function delete_subscriber_post(){
+        // check require param accessKey
+        $input = array(
+            'accessKey' => $this->post('accessKey'),
+            'subscriberId' => $this->post('subscriberId')
+        );
+        $this->_require_parameter($input);
+        
+        // check if that profile is exist with accessKey     
+        $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
+         
+        if($profile){
+            $status = $this->profile->delete_subscriber($input);
+            if($status === true){
+                $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
+                $this->response(msg_success($profile));
+            }else{
+                $this->response(msg_error($status));                
+            }
+        }else{
+           $this->response(msg_invalidAccessKey());
+        }
+    }
+
+
+
+
+
+
+
 
 }

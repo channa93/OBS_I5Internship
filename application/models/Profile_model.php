@@ -100,7 +100,9 @@ class Profile_model extends CI_Model {
         
     }
 
-    public function add_interest_category($categoryId,$accessKey){
+    public function add_interest_category($input){
+        $categoryId = $input['categoryId'];
+        $accessKey = $input['accessKey'];
         try{
             $categoryId = new MongoInt32($categoryId);
             $success = $this->mongo_db->where(array('accessKey' => $accessKey)) ->
@@ -112,7 +114,9 @@ class Profile_model extends CI_Model {
         }
     }
 
-    public function delete_interest_category($categoryId,$accessKey){
+    public function delete_interest_category($input){
+        $categoryId = $input['categoryId'];
+        $accessKey = $input['accessKey'];
         try{
             $categoryId = new MongoInt32($categoryId);
             $success = $this->mongo_db->where(array('accessKey' => $accessKey)) ->
@@ -165,6 +169,32 @@ class Profile_model extends CI_Model {
         }catch(Exception $e){
             return msg_exception($e.getMessage());
         }     
+    }
+
+    public function add_subscriber($input){
+        $subscriberId = $input['subscriberId'];
+        $accessKey = $input['accessKey'];
+        try{
+            $success = $this->mongo_db->where(array('accessKey' => $accessKey)) ->
+                        push(array('subscriber' => $subscriberId)) ->
+                        update(TABLE_PROFILE);
+            return $success;
+        }catch(Exception $e){
+            return msg_exception($e.getMessage());
+        }
+    }
+
+    public function delete_subscriber($input){
+        $subscriberId = $input['subscriberId'];
+        $accessKey = $input['accessKey'];
+        try{
+            $success = $this->mongo_db->where(array('accessKey' => $accessKey)) ->
+                        pull('subscriber' , $subscriberId) ->
+                        update(TABLE_PROFILE);
+            return $success;
+        }catch(Exception $e){
+            return msg_exception($e.getMessage());
+        }
     }
 
 

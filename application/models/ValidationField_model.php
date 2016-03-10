@@ -157,7 +157,7 @@ class ValidationField_model extends CI_Model {
         $output = $this->_prepare_input($template_fields, $data);
         return $output;
     }
-    
+
     /* template for collection TransactionHistory
      * @param [array] $data
      * @return [array] array of data template
