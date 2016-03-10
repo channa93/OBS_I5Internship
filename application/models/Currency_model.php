@@ -99,13 +99,18 @@ class Currency_model extends CI_Model{
     
     public function delete_currency($currency_id){
 
-        $result = $this->mongo_db->where(array('_id' => new MongoInt32($currency_id)))->get(TABLE_CURRENCY);
+        try{
+            $result = $this->mongo_db->where(array('_id' => new MongoInt32($currency_id)))->get(TABLE_CURRENCY);
 
-        if(!empty($result)){
-            $result = $this->mongo_db->delete(TABLE_CURRENCY);
-            return msg_success($result);
-        }else {
-            return msg_error('Unable to delete currency');
+            if(!empty($result)){
+                $result = $this->mongo_db->delete(TABLE_CURRENCY);
+                return msg_success($result);
+            }else {
+                return msg_error('Unable to delete currency');
+            }
+
+        }catch (Exception $e){
+            return msg_exception($e->getMessage());
         }
 
     }

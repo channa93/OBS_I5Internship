@@ -99,13 +99,18 @@ class AccountType_model extends CI_Model{
     
     public function delete_account_type($accountId){
 
-        $result = $this->mongo_db->where(array('_id' => new MongoInt32($accountId)))->get(TABLE_ACCOUNT);
+        try{
+            $result = $this->mongo_db->where(array('_id' => new MongoInt32($accountId)))->get(TABLE_ACCOUNT);
 
-        if(!empty($result)){
-            $result = $this->mongo_db->delete(TABLE_ACCOUNT);
-            return msg_success($result);
-        }else {
-            return msg_error('Unable to delete account type');
+            if(!empty($result)){
+                $result = $this->mongo_db->delete(TABLE_ACCOUNT);
+                return msg_success($result);
+            }else {
+                return msg_error('Unable to delete account type');
+            }
+
+        }catch(Exception $e){
+            return msg_exception($e->getMessage());
         }
 
     }

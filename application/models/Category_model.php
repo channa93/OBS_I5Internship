@@ -98,13 +98,19 @@ class Category_model extends CI_Model{
     }
     
     public function delete_category($category_id){
-        $result = $this->mongo_db->where(array('_id' => new MongoInt32($category_id)))->delete(TABLE_CATEGORY);
 
-        if(!empty($result)){
-            $result = $this->mongo_db->delete(TABLE_CATEGORY);
-            return msg_success($result);
-        }else {
-            return msg_error('Unable to delete category');
+        try{
+            $result = $this->mongo_db->where(array('_id' => new MongoInt32($category_id)))->delete(TABLE_CATEGORY);
+
+            if(!empty($result)){
+                $result = $this->mongo_db->delete(TABLE_CATEGORY);
+                return msg_success($result);
+            }else {
+                return msg_error('Unable to delete category');
+
+            }
+        }catch(Exception $e){
+            return msg_exception($e->getMessage());
         }
     }
    

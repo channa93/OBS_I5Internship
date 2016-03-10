@@ -99,13 +99,18 @@ class ProductCondition_model extends CI_Model{
     
     public function delete_product_condition($conditionId){
 
-        $result = $this->mongo_db->where(array('_id' => new MongoInt32($conditionId)))->get(TABLE_CONDITION);
+        try{
+            $result = $this->mongo_db->where(array('_id' => new MongoInt32($conditionId)))->get(TABLE_CONDITION);
 
-        if(!empty($result)){
-            $result = $this->mongo_db->delete(TABLE_CONDITION);
-            return msg_success($result);
-        }else {
-            return msg_error('Unable to delete currency');
+            if(!empty($result)){
+                $result = $this->mongo_db->delete(TABLE_CONDITION);
+                return msg_success($result);
+            }else {
+                return msg_error('Unable to delete currency');
+            }
+
+        }catch(Exception $e){
+            return msg_exception($e->getMessage());
         }
 
     }
