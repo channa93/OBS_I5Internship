@@ -15,6 +15,7 @@ class Profile extends REST_Controller{
             parent::__construct();
             $this->load->model('Profile_model','profile');
             $this->load->model('General_model','general');
+            $this->load->model('TransactionHistory_model','transaction_history');
             date_default_timezone_set("Asia/Bangkok");
     }
     
@@ -84,6 +85,7 @@ class Profile extends REST_Controller{
             $input['lastName'] = $this->post('lastName');
             $input['userName'] = $input['firstName'].' '.$input['lastName'];
             $input['sex'] = $this->post('sex');
+
             
                 // $input['phones'] = $this->post('number');
             $number = $this->post('number');
@@ -116,6 +118,7 @@ class Profile extends REST_Controller{
             }
 
             $filterParam= $this->_param_update($input);
+           // var_dump($filterParam);die;
             $user = $this->profile->edit_profile($filterParam);
             $this->response(msg_success($user));  
         }else{
@@ -130,6 +133,8 @@ class Profile extends REST_Controller{
                 $output[$key] = $val;
         }
         $output['modifiedDate'] = date('Y-m-d H:m:s A');
+        $output['isEdit'] = true;
+
         return $output;
     }
 
@@ -141,6 +146,123 @@ class Profile extends REST_Controller{
         $full_name =  preg_replace("/( |\+|\|\,|\(|\)|')/", "", $full_name);
         $full_name =strip_tags($full_name);
         return $full_name;
+    }
+
+
+    public function add_interest_category_post(){
+        // check require param accessKey
+        $input = array(
+            'accessKey' => $this->post('accessKey'),
+            'categoryId' => $this->post('categoryId')
+        );
+        $this->_require_parameter($input);
+            // check if that profile is exist with accessKey     
+        $accessKey = $this->post('accessKey');
+        $profile = $this->profile->get_profile_user_by_accessKey($accessKey);
+         
+        if($profile){
+            $categoryId = $input['categoryId'];
+            $status = $this->profile->add_interest_category($categoryId,$accessKey);
+            if($status === true){
+                $profile = $this->profile->get_profile_user_by_accessKey($accessKey);
+                $this->response(msg_success($profile));
+            }else{
+                $this->response(msg_error($status));                
+            }
+        }else{
+           $this->response(msg_invalidAccessKey());
+        }
+    }
+
+    public function delete_interest_category_post(){
+        // check require param accessKey
+        $input = array(
+            'accessKey' => $this->post('accessKey'),
+            'categoryId' => $this->post('categoryId')
+        );
+        $this->_require_parameter($input);
+            // check if that profile is exist with accessKey     
+        $accessKey = $this->post('accessKey');
+        $profile = $this->profile->get_profile_user_by_accessKey($accessKey);
+         
+        if($profile){
+            $categoryId = $input['categoryId'];
+            $status = $this->profile->delete_interest_category($categoryId,$accessKey);
+            if($status === true){
+                $profile = $this->profile->get_profile_user_by_accessKey($accessKey);
+                $this->response(msg_success($profile));
+            }else{
+                $this->response(msg_error($status));                
+            }
+        }else{
+           $this->response(msg_invalidAccessKey());
+        }
+    }
+
+    public function get_interest_category_post(){
+        // check require param accessKey
+        $input = array(
+            'accessKey' => $this->post('accessKey'),
+        );
+        $this->_require_parameter($input);
+            // check if that profile is exist with accessKey     
+        $accessKey = $this->post('accessKey');
+        $profile = $this->profile->get_profile_user_by_accessKey($accessKey);
+         
+        if($profile){
+            $user = $this->profile->get_interest_category($accessKey);// list of interest cateogry id
+            $data = $this->_get_category_info($user['interestCategoryId']);
+            //$data['userId'] = $user['userId'];
+            //var_dump($data);die;
+            $this->response(msg_success($data));
+        }else{
+           $this->response(msg_invalidAccessKey());
+        }
+    }
+
+    private function _get_category_info($listCategoryId){
+        $categoryList = array();
+        for($i=0 ; $i<count($listCategoryId); $i++){
+            $category = $this->profile->get_category_by_id($listCategoryId[$i]);
+            $categoryList[] =  array(
+                '_id' => $category['_id'],
+                'title' => $category['title']
+            );
+        }   
+        return $categoryList;
+    }
+
+
+    public function add_money_post(){
+        // check require param accessKey
+        $input = array(
+            'accessKey' => $this->post('accessKey'),
+            'money' => $this->post('money')
+        );
+        $this->_require_parameter($input); 
+        
+        // check if the money is greater than 0 
+        if($input['money']<0){
+            $this->response(msg_error('Money must greater than 0'));
+        }
+            // check if that profile is exist with accessKey      
+        $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
+         // var_dump($profile);
+        if($profile){
+            $data = $this->profile->add_money($profile[0], $input['money']);
+            $this->_add_transaction_history($data,$input['money']);
+            $this->response(msg_success($data));
+        }else{
+           $this->response(msg_invalidAccessKey());
+        }
+    }
+
+    private function _add_transaction_history($data,$amount){
+        $record['profileId'] = $data['_id'];
+        $record['type'] = new MongoInt32(1); // 1:Deposit, 2:Withdraw
+        $record['amount'] = new MongoInt32($amount);
+        // var_dump($record);die;
+        $this->transaction_history->add_transaction_history($record);
     }
 
 }

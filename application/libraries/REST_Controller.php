@@ -324,6 +324,8 @@ abstract class REST_Controller extends CI_Controller {
     public function __construct($config = 'rest')
     {
         parent::__construct();
+        date_default_timezone_set("Asia/Bangkok");  // custom edit time
+
         // Disable XML Entity (security vulnerability)
         libxml_disable_entity_loader(TRUE);
         // Check to see if PHP is equal to or greater than 5.4.x
