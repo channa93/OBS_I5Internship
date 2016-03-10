@@ -1,6 +1,4 @@
 
-application/config/config.php
-.htaccess
 .idea/
 nbproject/*
 
