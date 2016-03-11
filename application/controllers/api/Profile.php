@@ -33,7 +33,7 @@ class Profile extends REST_Controller{
 
     public function index_get(){
          $data =  $this->profile->get_profile_users();
-         $this->response($data);
+         $this->response(msg_success($data));
     }
     
         /*****Login/Regitser*/
@@ -65,8 +65,8 @@ class Profile extends REST_Controller{
 
     public function add_user($params) {        
         $user = $this->profile->add_user($params);
-        $user[0]['userId'] = $user[0]['_id']->{'$id'};
-        unset($user[0]['_id']);
+        $user['userId'] = $user['_id']->{'$id'};
+        unset($user['_id']);
         $user['message'] = "** Welcome new user! ";
         $data = msg_success($user); 
         return $this->response($data);
@@ -86,7 +86,7 @@ class Profile extends REST_Controller{
         $profile = $this->profile->get_profile_user_by_accessKey($accessKey);
          
         if($profile){
-            $data = $profile[0];
+            $data = $profile;
             $input['firstName'] = $this->post('firstName');
             $input['lastName'] = $this->post('lastName');
             $input['userName'] = $input['firstName'].' '.$input['lastName'];
@@ -256,7 +256,7 @@ class Profile extends REST_Controller{
         $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
          // var_dump($profile);
         if($profile){
-            $data = $this->profile->add_money($profile[0], $input['money']);
+            $data = $this->profile->add_money($profile, $input['money']);
             $this->_add_transaction_history($data,$input['money']);
             $this->response(msg_success($data));
         }else{

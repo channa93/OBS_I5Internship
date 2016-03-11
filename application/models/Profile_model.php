@@ -26,7 +26,7 @@ class Profile_model extends CI_Model {
              $user =  $this->mongo_db->
                          where(array('accessKey'=> $accessKey))->
                          get(TABLE_PROFILE);
-             return $user;
+             return $user[0];
              
         } catch (Exception $e) {
             return e.getMessage();
@@ -39,7 +39,7 @@ class Profile_model extends CI_Model {
              $user =  $this->mongo_db->
                          where(array('_id'=> new MongoId($id)))->
                          get(TABLE_PROFILE);
-             return $user;
+             return $user[0];
              
         } catch (Exception $e) {
             return e.getMessage();
@@ -86,8 +86,8 @@ class Profile_model extends CI_Model {
                          ->set($data)->update(TABLE_PROFILE);
             if($id){
                 $user =  $this->get_profile_user_by_accessKey($data['accessKey']);
-                $user[0]['userId'] =   $user[0]['_id']->{'$id'} ;
-                unset($user[0]['_id']);
+                $user['userId'] =   $user['_id']->{'$id'} ;
+                unset($user['_id']);
                 return $user;
             }
             
@@ -164,8 +164,8 @@ class Profile_model extends CI_Model {
                             where(array('accessKey' => $profile['accessKey']))->
                             set('wallet', $money_add)->
                             update(TABLE_PROFILE);
-            $data = $this->get_profile_user_by_accessKey($profile['accessKey']);
-            return $data[0];
+            $user = $this->get_profile_user_by_accessKey($profile['accessKey']);
+            return $user;
         }catch(Exception $e){
             return msg_exception($e.getMessage());
         }     
