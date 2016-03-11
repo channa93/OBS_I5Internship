@@ -55,7 +55,9 @@ class Search extends REST_Controller{
     public function search_user_post(){
 
         $params = array(
-            'filter' => $this->post('filter')
+            'filter' => $this->post('filter'),
+            'limit' => $this->post('limit'),
+            'offset' => $this->post('offset')
         );
 
         //check profile exist
@@ -89,7 +91,7 @@ class Search extends REST_Controller{
                             )
                         )
 
-        ))->get(TABLE_PROFILE);
+        ))->limit($this->post('limit'))->offset($this->post('offset'))->get(TABLE_PROFILE);
 
         if(empty($result)){
             $this->response(msg_error('Result not found!!!'));

@@ -72,12 +72,18 @@ class AccountType_model extends CI_Model{
         }
 
     }
+
+    public function get_account_type_by_id($id){
+        try{
+            return $this->mongo_db->where(array('_id' => new MongoInt32($id)))->get(TABLE_ACCOUNT);
+        } catch(Exception $e){
+            return msg_exception($e->getMessage());
+        }
+    }
     
     public function update_account_type($accountId, $account){
 
         try{
-            $account['modifiedDate'] = date('Y-m-d H:m:s A');
-
             //update format data in database
             $result = $this->mongo_db->where(array('_id' => new MongoInt32($accountId)))->set($account)->update(TABLE_ACCOUNT);
 

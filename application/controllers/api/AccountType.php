@@ -51,6 +51,20 @@ class AccountType extends REST_Controller{
             }
         }
     }
+
+    private function _update_params($params, $id){
+        $info = $this->account->get_account_type_by_id($id);
+        $output = array();
+        foreach ($params as $key => $val){
+            if(empty($val) || $val == null){
+                $output[$key] = $info[0][$key];
+            }else {
+                $output[$key] = $val;
+            }
+        }
+        $output['modifiedDate'] = date('Y-m-d H:m:s A');
+        return $output;
+    }
     
     public function add_account_type_post(){
         $params = array(
@@ -65,7 +79,7 @@ class AccountType extends REST_Controller{
         //check required parameter
         $this->_require_parameter($params);
 
-        //check title has existed or not
+        //check type has existed or not
         $this->_check_type_exist();
 
         //check length of params
@@ -94,10 +108,7 @@ class AccountType extends REST_Controller{
     
     public function update_account_type_post(){
         $params = array(
-            'accountId' => $this->post('accountId'),
-            'type' => $this->post('type'),
-            'priceCharge' => $this->post('priceCharge'),
-            'features' => $this->post('features')
+            'accountId' => $this->post('accountId')
         );
         
         //check profile exist
@@ -112,20 +123,23 @@ class AccountType extends REST_Controller{
             $this->response(msg_error('This id does not exist', $this->post('accountId')));
         }
 
-        //check title has existed or not
+        //check type has existed or not
         $this->_check_type_exist();
-        
-        //check length of params
-        if(!check_charactor_length($this->post('type'),TITLE_LENGTH_LIMITED)){
-            $this->response(invalid_charactor_length($this->post('type'), 'type'));
-        }
 
         $input['type'] = $this->post('type');
         $input['priceCharge'] = (double)($this->post('priceCharge'));
         $input['features'] = $this->post('features');
 
-        //update currency
-        $response = $this->account->update_account_type($accountId,$input);
+        //update field that is empty or null
+        $update_account_type = $this->_update_params($input,$accountId);
+
+        //check length of params
+        if(!check_charactor_length($update_account_type['type'],TITLE_LENGTH_LIMITED)){
+            $this->response(invalid_charactor_length($update_account_type['type'], 'type'));
+        }
+
+        //update account
+        $response = $this->account->update_account_type($accountId,$update_account_type);
 
         $this->response($response);
         

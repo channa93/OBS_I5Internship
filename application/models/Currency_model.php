@@ -15,7 +15,8 @@ class Currency_model extends CI_Model{
         $this->load->model('General_model','general');
         $this->load->model('ValidationField_model','validateField');
     }
-    
+
+
     public function add_currency($currency){
         
         //check for last currency id
@@ -72,11 +73,18 @@ class Currency_model extends CI_Model{
         }
 
     }
+
+    public function get_currency_by_id($id){
+        try{
+            return $this->mongo_db->where(array('_id' => new MongoInt32($id)))->get(TABLE_CURRENCY);
+        } catch(Exception $e){
+            return msg_exception($e->getMessage());
+        }
+    }
     
     public function update_currency($currency_id, $currency){
 
         try{
-            $currency['modifiedDate'] = date('Y-m-d H:m:s A');
 
             //update format data in database
             $result = $this->mongo_db->where(array('_id' => new MongoInt32($currency_id)))->set($currency)->update(TABLE_CURRENCY);

@@ -71,12 +71,18 @@ class Category_model extends CI_Model{
         }
 
     }
+
+    public function get_category_by_id($id){
+        try{
+            return $this->mongo_db->where(array('_id' => new MongoInt32($id)))->get(TABLE_CATEGORY);
+        } catch(Exception $e){
+            return msg_exception($e->getMessage());
+        }
+    }
     
     public function update_category($category_id, $category){
 
         try{
-            $category['modifiedDate'] = date('Y-m-d H:m:s A');
-
             //update format data in database
             $result = $this->mongo_db->where(array('_id' => new MongoInt32($category_id)))->set($category)->update(TABLE_CATEGORY);
 

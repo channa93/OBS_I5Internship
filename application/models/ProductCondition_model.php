@@ -72,12 +72,18 @@ class ProductCondition_model extends CI_Model{
         }
 
     }
+
+    public function get_product_condition_by_id($id){
+        try{
+            return $this->mongo_db->where(array('_id' => new MongoInt32($id)))->get(TABLE_CONDITION);
+        } catch(Exception $e){
+            return msg_exception($e->getMessage());
+        }
+    }
     
     public function update_product_condition($conditionId, $condition){
 
         try{
-            $condition['modifiedDate'] = date('Y-m-d H:m:s A');
-
             //update format data in database
             $result = $this->mongo_db->where(array('_id' => new MongoInt32($conditionId)))->set($condition)->update(TABLE_CONDITION);
 

@@ -51,6 +51,20 @@ class ProductCondition extends REST_Controller{
             }
         }
     }
+
+    private function _update_params($params, $id){
+        $info = $this->condition->get_product_condition_by_id($id);
+        $output = array();
+        foreach ($params as $key => $val){
+            if(empty($val) || $val == null){
+                $output[$key] = $info[0][$key];
+            }else {
+                $output[$key] = $val;
+            }
+        }
+        $output['modifiedDate'] = date('Y-m-d H:m:s A');
+        return $output;
+    }
     
     public function add_product_condition_post(){
         $params = array(
@@ -95,9 +109,7 @@ class ProductCondition extends REST_Controller{
     
     public function update_product_condition_post(){
         $params = array(
-            'conditionId' => $this->post('conditionId'),
-            'title' => $this->post('title'),
-            'description' => $this->post('description')
+            'conditionId' => $this->post('conditionId')
         );
         
         //check profile exist
@@ -114,20 +126,23 @@ class ProductCondition extends REST_Controller{
 
         //check title has existed or not
         $this->_check_title_exist();
-        
-        //check length of params
-        if(!check_charactor_length($this->post('title'),TITLE_LENGTH_LIMITED)){
-            $this->response(invalid_charactor_length($this->post('title'), 'title'));
-        }
-        if(!check_charactor_length($this->post('description'), DESC_LENGTH_LIMITED)){
-            $this->response(invalid_charactor_length($this->post('description'), 'description'));
-        }
 
         $input['title'] = $this->post('title');
         $input['description'] = $this->post('description');
 
+        //update field that is empty or null
+        $update_condition = $this->_update_params($input,$conditionId);
+        
+        //check length of params
+        if(!check_charactor_length($update_condition['title'],TITLE_LENGTH_LIMITED)){
+            $this->response(invalid_charactor_length($update_condition['title'], 'title'));
+        }
+        if(!check_charactor_length($update_condition['description'], DESC_LENGTH_LIMITED)){
+            $this->response(invalid_charactor_length($update_condition['description'], 'description'));
+        }
+
         //update product condition
-        $response = $this->condition->update_product_condition($conditionId,$input);
+        $response = $this->condition->update_product_condition($conditionId,$update_condition);
 
         $this->response($response);
         

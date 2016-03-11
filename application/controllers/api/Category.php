@@ -43,6 +43,20 @@ class Category extends REST_Controller{
         }
     }
 
+    private function _update_params($params, $id){
+        $info = $this->category->get_category_by_id($id);
+        $output = array();
+        foreach ($params as $key => $val){
+            if(empty($val) || $val == null){
+                $output[$key] = $info[0][$key];
+            }else {
+                $output[$key] = $val;
+            }
+        }
+        $output['modifiedDate'] = date('Y-m-d H:m:s A');
+        return $output;
+    }
+
     private function _check_id_exist(){
         $all_categories = $this->mongo_db->get(TABLE_CATEGORY);
         foreach($all_categories as $obj){
@@ -95,9 +109,7 @@ class Category extends REST_Controller{
     
     public function update_category_post(){
         $params = array(
-            'categoryId' => $this->post('categoryId'),
-            'title' => $this->post('title'),
-            'description' => $this->post('description')
+            'categoryId' => $this->post('categoryId')
         );
         
         //check profile exist
@@ -114,20 +126,23 @@ class Category extends REST_Controller{
 
         //check title has existed or not
         $this->_check_title_exist();
-        
-        //check length of params
-        if(!check_charactor_length($this->post('title'),TITLE_LENGTH_LIMITED)){
-            $this->response(invalid_charactor_length($this->post('title'), 'title'));
-        }
-        if(!check_charactor_length($this->post('description'), DESC_LENGTH_LIMITED)){
-            $this->response(invalid_charactor_length($this->post('description'), 'description'));
-        }
 
         $input['title'] = $this->post('title');
         $input['description'] = $this->post('description');
 
+        //update field that is empty or null
+        $update_category = $this->_update_params($input,$categoryId);
+
+        //check length of params
+        if(!check_charactor_length($update_category['title'],TITLE_LENGTH_LIMITED)){
+            $this->response(invalid_charactor_length($update_category['title'], 'title'));
+        }
+        if(!check_charactor_length($update_category['description'], DESC_LENGTH_LIMITED)){
+            $this->response(invalid_charactor_length($update_category['description'], 'description'));
+        }
+
         //update category
-        $response = $this->category->update_category($categoryId,$input);
+        $response = $this->category->update_category($categoryId,$update_category);
 
         $this->response($response);
         

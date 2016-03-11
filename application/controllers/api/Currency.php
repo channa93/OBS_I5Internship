@@ -18,7 +18,7 @@ class Currency extends REST_Controller{
     }
     
     private function _require_parameter($input){
-        $checked_param = require_parameter($input)kjhkjhkjh;
+        $checked_param = require_parameter($input);
         if($checked_param !== TRUE ){
             $this->response(msg_missingParameter($checked_param));
         }
@@ -50,6 +50,20 @@ class Currency extends REST_Controller{
                 return (int)($this->post('currencyId'));
             }
         }
+    }
+
+    private function _update_params($params, $id){
+        $info = $this->currency->get_currency_by_id($id);
+        $output = array();
+        foreach ($params as $key => $val){
+            if(empty($val) || $val == null){
+                $output[$key] = $info[0][$key];
+            }else {
+                $output[$key] = $val;
+            }
+        }
+        $output['modifiedDate'] = date('Y-m-d H:m:s A');
+        return $output;
     }
     
     public function add_currency_post(){
@@ -95,9 +109,7 @@ class Currency extends REST_Controller{
     
     public function update_currency_post(){
         $params = array(
-            'currencyId' => $this->post('currencyId'),
-            'title' => $this->post('title'),
-            'description' => $this->post('description')
+            'currencyId' => $this->post('currencyId')
         );
         
         //check profile exist
@@ -114,20 +126,23 @@ class Currency extends REST_Controller{
 
         //check title has existed or not
         $this->_check_title_exist();
-        
-        //check length of params
-        if(!check_charactor_length($this->post('title'),TITLE_LENGTH_LIMITED)){
-            $this->response(invalid_charactor_length($this->post('title'), 'title'));
-        }
-        if(!check_charactor_length($this->post('description'), DESC_LENGTH_LIMITED)){
-            $this->response(invalid_charactor_length($this->post('description'), 'description'));
-        }
 
         $input['title'] = $this->post('title');
         $input['description'] = $this->post('description');
 
+        //update field that is empty or null
+        $update_currency = $this->_update_params($input,$currencyId);
+
+        //check length of params
+        if(!check_charactor_length($update_currency['title'],TITLE_LENGTH_LIMITED)){
+            $this->response(invalid_charactor_length($update_currency['title'], 'title'));
+        }
+        if(!check_charactor_length($update_currency['description'], DESC_LENGTH_LIMITED)){
+            $this->response(invalid_charactor_length($update_currency['description'], 'description'));
+        }
+
         //update currency
-        $response = $this->currency->update_currency($currencyId,$input);
+        $response = $this->currency->update_currency($currencyId,$update_currency);
 
         $this->response($response);
         
