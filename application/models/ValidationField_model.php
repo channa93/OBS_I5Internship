@@ -50,7 +50,11 @@ class ValidationField_model extends CI_Model {
             'avatar' => '',
             'emails' => array(), //[{email,status},...]
             'phones' => array(), //[{countryCode, number, status},....]
-            'contactInfo' => array(),
+            'contactInfo' => array(
+                'address' => '',
+                'website' => '',
+                'companyName' => ''
+            ),
             'accountType' => NORMAL,
             'interestCategoryId' => array(),
             'socialAccount' => array(), //{socialId, type}  , type 1:FACEBOOK,2:GOOGLE+

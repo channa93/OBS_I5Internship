@@ -91,6 +91,11 @@ class Profile extends REST_Controller{
             $input['lastName'] = $this->post('lastName');
             $input['userName'] = $input['firstName'].' '.$input['lastName'];
             $input['sex'] = $this->post('sex');
+            $input['contactInfo'] = array(
+                'address' => $this->post('address'),
+                'website' => $this->post('website'),
+                'companyName' => $this->post('companyName')
+            );
 
             
                 // $input['phones'] = $this->post('number');
