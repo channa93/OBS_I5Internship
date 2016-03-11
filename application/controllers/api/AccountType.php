@@ -101,7 +101,7 @@ class AccountType extends REST_Controller{
         //check profile exist
         $this->_check_profile_exist($this->post('accessKey'));
 
-        $response = $this->account->get_all_account_type();
+        $response = $this->account->get_all_accounts_type();
 
         $this->response($response);
     }
