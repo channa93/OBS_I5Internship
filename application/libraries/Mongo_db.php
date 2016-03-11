@@ -16,7 +16,9 @@
  */
 
 class Mongo_db {
-        
+        //my own variable ,$mycounter, used to store suffix number for the user who has the same username 
+        public $mycounter=0;
+
         private $CI;
         private $config_file = 'mongodb';
         

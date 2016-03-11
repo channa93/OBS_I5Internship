@@ -18,7 +18,6 @@ class Profile extends REST_Controller{
             $this->load->model('TransactionHistory_model','transaction_history');
             date_default_timezone_set("Asia/Bangkok");
     }
-    
     /**
      * used to check if the input passed the required param or not
      * @param  $input : associatave array
@@ -41,24 +40,37 @@ class Profile extends REST_Controller{
     public function login_post(){
         $params = array(
             'socialId' => (string) $this->post('socialId'),
-            'socialType' => (int) $this->post('socialType')
+            'socialType' => (int) $this->post('socialType'),
+            'userName'   =>  $this->post('userName')
         );
-
+            // check require param
         $this->_require_parameter($params);  
         $input['firstName'] = $this->post('firstName');
         $input['lastName'] = $this->post('lastName');
-        $input['userName'] = $input['firstName']." ".$input['lastName'];
-        $input['avatar'] = $this->post('avatar');    
+        $input['displayName'] = $input['firstName']." ".$input['lastName'];
+        $input['userName'] = $this->post('userName');
+        $input['avatar'] = $this->post('avatar');
+        unset($params['userName']);    
         $input['socialAccount'][] = $params; // array of associative array = array of object
 
         $data = $this->profile->login($params);
-        if($data){
+        if($data){ // profile already exist
             $data['message'] = "** Welcome back, ".$data['firstName']." ".$data['lastName']."!";
             $this->response(msg_success($data));
-        }else{
+        }else{  // not exist , then creat new user
             $user = $this->add_user($input);
             $this->response(msg_success($user));
         }    
+    }
+    private function _check_username_exsit($firstName, $lastName){
+        $userName = $firstName." ".$lastName;
+        $profiles = $this->profile->get_profile_users();
+        foreach ($profiles as $profile) {
+            if(strtolower($profile['userName']) == strtolower($userName)){
+                return true;
+            }       
+        }
+        return false;     
     }
 
         /***** Add user */
@@ -80,24 +92,21 @@ class Profile extends REST_Controller{
             'accessKey' => $this->post('accessKey'),
         );
         $this->_require_parameter($input);
-
         // check if that profile is exist with accessKey     
         $accessKey = $this->post('accessKey');
         $profile = $this->profile->get_profile_user_by_accessKey($accessKey);
-         
         if($profile){
             $data = $profile;
             $input['firstName'] = $this->post('firstName');
             $input['lastName'] = $this->post('lastName');
-            $input['userName'] = $input['firstName'].' '.$input['lastName'];
+            $input['displayName'] = $this->post('displayName');
             $input['sex'] = $this->post('sex');
             $input['contactInfo'] = array(
                 'address' => $this->post('address'),
                 'website' => $this->post('website'),
                 'companyName' => $this->post('companyName')
             );
-
-            
+           
                 // $input['phones'] = $this->post('number');
             $number = $this->post('number');
             $email = $this->post('email');

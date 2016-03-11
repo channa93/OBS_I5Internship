@@ -10,13 +10,14 @@ require APPPATH.'/libraries/REST_Controller.php';
  * @3/3/2016
  */
 
+
 class Currency extends REST_Controller{
     
     function __construct(){
         parent:: __construct();
         $this->load->model('Currency_model', 'currency');
     }
-    
+
     private function _require_parameter($input){
         $checked_param = require_parameter($input);
         if($checked_param !== TRUE ){

@@ -42,9 +42,10 @@ class ValidationField_model extends CI_Model {
      */
     public function profile($data){
         $template_fields = array(
-            'userName' => '',
+            'displayName' => '',
             'firstName' => '',
             'lastName' => '',
+            'userName' => '',  // use for future scale that user can login with username and password
             'accessKey' => '',
             'sex' => '',
             'avatar' => '',
@@ -182,6 +183,40 @@ class ValidationField_model extends CI_Model {
         $output = $this->_prepare_input($template_fields, $data);
         return $output;
     }
+
+
+    public function product($data){
+
+        $template_fields = array(
+            'name' => '',
+            'price' => 0,
+            'currencyType' => 1,  //1:KH
+            'productCode' => '',
+            'status' => array(
+                'status' => 1,  //1:review, 2:accepted, 3:rejected, 4:available, 5:sold
+                'date' => date('Y-m-d H:m:s A')
+            ),
+            'type' => new MongoInt32(1),  // 1:simple, 2:event
+            'description' => '',
+            'imageGallery' => array(),
+            'videoGallery' => array(),
+            'likerId' => array(),
+            'categoryId' => array(),
+            'viewCount' => new MongoInt32(0),
+            'condition' => '',
+            'ownerId' => '',
+            'isEdit' => false,
+            'createdDate' => 'Y-m-d H:m:s A',
+            'modifiedDate' => date('Y-m-d H:m:s A')
+        );
+        if(!$data){
+            return $template_fields;
+        }
+
+        $output = $this->_prepare_input($template_fields, $data);
+        return $output;
+    }
+
     
     
    
