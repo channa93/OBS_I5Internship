@@ -23,6 +23,15 @@ class Product_model extends CI_Model{
             return msg_exception(e.getMessage());
         }
     }
+    public function get_product_by_id($id){
+        try {
+            $product = $this->mongo_db->where(array('_id' => new MongoId($id)))->get(TABLE_PRODUCT);
+            return msg_success($product[0]);
+        } catch (Exception $e) {
+            return msg_exception(e.getMessage());
+        }
+    }
+
     
     public function add_product($product){
         try {
@@ -37,19 +46,36 @@ class Product_model extends CI_Model{
        
     }
    
-   public function read_available_product(){
-       //$field = $status['status'];       
-//       return $this->mongo_db->where_match_element('status'->'status', array('product_status' => 4))->get(TABLE_PRODUCT);
-      
+   public function get_available_products(){
+      try {
+          $products = $this->mongo_db->where(array('isDelete'=>false))->
+                            where_match_element('status',
+                                          array('status'=> new MongoInt32(1)))->
+                            get(TABLE_PRODUCT);
+          return msg_success($products);
+      } catch (Exception $e) {
+          return msg_exception($e.getMessage()); 
+      }
+   }
+
+   public function add_images_product($productId, $imageGallery){
+      try {
+          $status =  $this->mongo_db->where(array('_id' => new MongoId($productId)))->
+                            set(array('imageGallery' => $imageGallery))->update(TABLE_PRODUCT);
+          $product = $this->get_product_by_id($productId);
+          return $product;
+      } catch (Exception $e) {
+          return msg_exception($e.getMessage()); 
+      }
+   }
+  
+   public function edit_product($updateData, $productId){
+      $status =  $this->mongo_db->where(array('_id' => new MongoId($productId)))->
+                        set($updateData)->update(TABLE_PRODUCT);
+      $product = $this->get_product_by_id($productId);
+      return $product;
    }
    
-   public function update_product($updateProduct){
-      return $this->mongo_db->where(array('_id' => new MongoId($updateProduct['id'])))->update(TABLE_PRODUCT,array('name' => $updateProduct['name'], 'condition' => $updateProduct['condition']));
-   }
-   
-   public function delete_product($productId){
-       return $this->mongo_db->where(array('_id' => new MongoId($productId)))->update(TABLE_PRODUCT, array('isDelete' => TRUE));
-   }
    
 }
 

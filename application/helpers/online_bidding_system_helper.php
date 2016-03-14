@@ -5,8 +5,7 @@
  * @param  [associative array] $array_input
  * @return true if required parameter is passing, else return the require param key that not passing
  */
-if (!function_exists('require_parameter')) {
-    
+if (!function_exists('require_parameter')) {  
     function require_parameter($array_input) {
         $result = array();
         try {
@@ -24,8 +23,24 @@ if (!function_exists('require_parameter')) {
             return $result;
         }
     }   
-
 }
+
+
+if (!function_exists('filter_param_update')) {   // we dont update if their field cotain empty
+     function filter_param_update($update_data) {
+        $output = array();
+        foreach ($update_data as $key => $val) {
+            if ($val != '' || $val!=null || $val!=false || !empty($val))
+                $output[$key] = $val;
+        }
+        $output['modifiedDate'] = date('Y-m-d H:m:s A');
+        $output['isEdit'] = true;
+
+        return $output;
+    } 
+}
+
+
 
 if (!function_exists('check_charactor_length')) {
     function check_charactor_length($content='', $length){
@@ -156,6 +171,20 @@ if (!function_exists('validate_email')) {
           }
     }
    
+}
+if (!function_exists('create_folder')) {
+    function create_folder($folderName, $fullPath = false) {
+        $cwd = getcwd();
+        $dir = getcwd() . '/' . UPLOAD_PATH_IMAGE_PRODUCT. '/'. $folderName;
+        if (file_exists($dir))
+            return $fullPath ? $dir : $folderName;
+
+        mkdir(UPLOAD_PATH_IMAGE_PRODUCT. '/' . $folderName, 0744, true);
+        chmod(UPLOAD_PATH_IMAGE_PRODUCT. '/' . $folderName, 0744);
+        clearstatcache();
+        return $fullPath ? $dir : $folderName;
+    }
+
 }
 
 

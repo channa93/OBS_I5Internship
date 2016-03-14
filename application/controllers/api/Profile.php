@@ -107,7 +107,6 @@ class Profile extends REST_Controller{
                 'companyName' => $this->post('companyName')
             );
            
-                // $input['phones'] = $this->post('number');
             $number = $this->post('number');
             $email = $this->post('email');
 
@@ -131,14 +130,16 @@ class Profile extends REST_Controller{
             }  
             if(isset($email)){
                 if(validate_email($email)){
-                    $input['emails'] = $email;
+                    $input['emails'][] = array(
+                        'email' => $email,
+                        'status' => 0, // 0: not comfirm yet, 1:comfirmed,
+                    );
                 }else{
                     $this->response(msg_error('Invalid email address'));
                 }
             }
 
-            $filterParam= $this->_param_update($input);
-           // var_dump($filterParam);die;
+            $filterParam= filter_param_update($input);  
             $user = $this->profile->edit_profile($filterParam);
             $this->response(msg_success($user));  
         }else{
@@ -146,17 +147,17 @@ class Profile extends REST_Controller{
         }
     }   
 
-    private function _param_update($update_data) {
-        $output = array();
-        foreach ($update_data as $key => $val) {
-            if ($val != '' || $val!=null || $val!=false || !empty($val))
-                $output[$key] = $val;
-        }
-        $output['modifiedDate'] = date('Y-m-d H:m:s A');
-        $output['isEdit'] = true;
+    // private function _param_update($update_data) {
+    //     $output = array();
+    //     foreach ($update_data as $key => $val) {
+    //         if ($val != '' || $val!=null || $val!=false || !empty($val))
+    //             $output[$key] = $val;
+    //     }
+    //     $output['modifiedDate'] = date('Y-m-d H:m:s A');
+    //     $output['isEdit'] = true;
 
-        return $output;
-    }
+    //     return $output;
+    // }
 
 
     private function _get_random_image_name($file){

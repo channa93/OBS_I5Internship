@@ -49,7 +49,7 @@ class ValidationField_model extends CI_Model {
             'accessKey' => '',
             'sex' => '',
             'avatar' => '',
-            'emails' => array(), //[{email,status},...]
+            'emails' => array(), //[{email,status},...] //status 0: not comfirm yet, 1:comfirmed,
             'phones' => array(), //[{countryCode, number, status},....]
             'contactInfo' => array(
                 'address' => '',
@@ -60,7 +60,7 @@ class ValidationField_model extends CI_Model {
             'interestCategoryId' => array(),
             'socialAccount' => array(), //{socialId, type}  , type 1:FACEBOOK,2:GOOGLE+
             'subscriber' => array(),
-            'wallet' => 0,
+            'wallet' => 100,
             'hits' => 0,
             'status' => ACTIVE,
             'createdDate' => date("Y-m-d H:m:s A"),
@@ -203,9 +203,10 @@ class ValidationField_model extends CI_Model {
             'likerId' => array(),
             'categoryId' => array(),
             'viewCount' => new MongoInt32(0),
-            'condition' => '',
+            'condition' => 1,  //1: review
             'ownerId' => '',
             'isEdit' => false,
+            'isDelete' => false,
             'createdDate' => 'Y-m-d H:m:s A',
             'modifiedDate' => date('Y-m-d H:m:s A')
         );

@@ -33,69 +33,110 @@ class Product extends REST_Controller{
         $products = $this->product->get_all_products();
         $this->response($products);
     }
-    public function add_product_post(){
 
+    public function add_product_post(){
         // check require param accessKey
         $input = array(
             'name' => $this->post('name'),
-            'price' => (double)$this->post('price'),
+            //'price' => (double)$this->post('price'),
+            'price' => (double) number_format(doubleval($this->post('price')), 2, '.', ''), //float with 2 decimal places: .00 
             'currencyType' => (int)$this->post('currencyType'),
             'accessKey' => $this->post('accessKey')
-        );
+        );      
         $this->_require_parameter($input);
         $input['description'] = $this->post('description');
         $input['productCode'] = $this->post('productCode');
 
+
+        if(!check_charactor_length($input['name'],TITLE_LENGTH_LIMITED)) $this->response(invalid_charactor_length($input['name'] , 'name'));
+        if(!check_charactor_length($input['description'],DESC_LENGTH_LIMITED)) $this->response(invalid_charactor_length($input['description'] , 'description'));
+
         // check if that profile is exist with accessKey
         $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
         if($profile){
-            if(count($_FILES)>0 ){ // if there is files pass to server
-                 $input['imageGallery'][] = $this->_upload_image_gallery($_FILES);
-            }
             $input['ownerId'] = $profile['_id']->{'$id'};
             unset($input['accessKey']);
+            // add product then add image gallery if adding product is success
             $output = $this->product->add_product($input);
+            if($output['code']==1){// success
+                $productId = $output['data']['_id']->{'$id'};
+                $imageGallery = $this->_upload_image_gallery($_FILES, $productId);
+                $output = $this->product->add_images_product($productId, $imageGallery);       
+            }
             $this->response($output);
         }else{
            $this->response(msg_invalidAccessKey());
         }
     }
-    private function _upload_image_gallery($files){
+
+    private function _upload_image_gallery($files, $productId){
         $imageGallery=array();
+        $target_path = create_folder($productId);  // create folder in path of image product upload and return path
+        $target_path = UPLOAD_PATH_IMAGE_PRODUCT.'/'.$target_path;
         foreach($files as $file){
-            $file_name_upload = upload_file(UPLOAD_PATH_IMAGE_PRODUCT, $file);
+            $file_name_upload = upload_file($target_path, $file);
             if(is_array($file_name_upload)){ // error
                 $this->response($file_name_upload);
             }else if($file_name_upload==false){
                 $this->response(msg_error('Error when upload file'));
             }
             else{
-                $imageGallery[] = base_url().UPLOAD_PATH_IMAGE_PRODUCT.'/'.$file_name_upload;
+                $imageGallery[] = base_url().$target_path.'/'.$file_name_upload;
             }
         }
-        if(count($imageGallery)<=0) return;
         return $imageGallery;
     }
 
 
-    // public function read_available_product_get(){
-    //     $response = $this->product->read_available_product();
-    //     $this->response($response);
-    // }
+    public function get_available_products_post(){
+        // check require param accessKey
+        $input = array(
+            'accessKey' => $this->post('accessKey')
+        );
+        $this->_require_parameter($input);
 
-    // public function update_product_post(){
-    //     $params = $this->post();
-    //     $response = $this->product->update_product($params);
-    //     $this->response($response);
-    // }
+        // check if that profile is exist with accessKey
+        $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
+        if($profile){
+            $data = $this->product->get_available_products();
+            $this->response($data);
+        }else{
+           $this->response(msg_invalidAccessKey());
+        }
+    }
 
-    // public function delete_product_post(){
-    //     $params = $this->post();
-    //     $response = $this->product->delete_product($params['id']);
-    //     $this->response($response);
-    // }
+    public function edit_product_post()
+    {
+        // check require param accessKey
+        $input = array( 
+            'accessKey' => $this->post('accessKey'),
+            'productId' => $this->post('productId')
+        );
+        $this->_require_parameter($input);
+        $input['description'] = $this->post('description');
+        $input['productCode'] = $this->post('productCode');
+        $input['price'] = (double) number_format(doubleval($this->post('price')), 2, '.', '');
 
+        // check if that profile is exist with accessKey
+        $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
+        if($profile){
+            $updateData = filter_param_update($input);
+            unset($updateData['accessKey'],$updateData['productId']);
+            $output = $this->product->edit_product($updateData, $input['productId']);
+            if($output['code']==1){// update success then upload image and add image url to db
+                $productId = $output['data']['_id']->{'$id'};
+                $imageGallery = $this->_upload_image_gallery($_FILES, $productId);
+                if(!empty($imageGallery)){
+                    $output = $this->product->add_images_product($productId, $imageGallery);       
+                }
+            }
+            $this->response($output);
 
+        }else{
+           $this->response(msg_invalidAccessKey());
+        }
+        
+    }
 
 
 }
