@@ -36,7 +36,7 @@ class AccountType_model extends CI_Model{
             if($result){
                 //query to get that newly insert account type
                 $get_account = $this->mongo_db->where(array('_id' => $result))->get(TABLE_ACCOUNT);
-                $get_account[0]['accountId'] = $get_account[0]['_id'];
+                $get_account[0]['accountTypeId'] = $get_account[0]['_id'];
 
                 //remove field createdDate and modifiedDate before send to client
                 unset($get_account[0]['_id'], $get_account[0]['createdDate'], $get_account[0]['modifiedDate']);
@@ -60,7 +60,7 @@ class AccountType_model extends CI_Model{
             $result = [];
 
             foreach($accounts as $obj){
-                $obj['accountId'] = $obj['_id'];
+                $obj['accountTypeId'] = $obj['_id'];
                 unset($obj['_id'],$obj['createdDate'], $obj['modifiedDate']);
                 array_push($result, $obj);
             }
@@ -90,7 +90,7 @@ class AccountType_model extends CI_Model{
             //query to get that newly update account type
             if($result){
                 $get_account = $this->mongo_db->where(array('_id' => new MongoInt32($accountId)))->get(TABLE_ACCOUNT);
-                $get_account[0]['currencyId'] = $get_account[0]['_id'];
+                $get_account[0]['accountTypeId'] = $get_account[0]['_id'];
                 unset($get_account[0]['_id'], $get_account[0]['createdDate'], $get_account[0]['modifiedDate']);
                 return msg_success($get_account[0]);
             }else {
