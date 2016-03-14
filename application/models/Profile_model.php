@@ -22,12 +22,13 @@ class Profile_model extends CI_Model {
     }
 
     public function get_profile_user_by_accessKey($accessKey){
+
         try {
              $user =  $this->mongo_db->
                          where(array('accessKey'=> $accessKey))->
                          get(TABLE_PROFILE);
-             return $user[0];
-             
+            if(empty($user)) return false;            
+            return $user[0];        
         } catch (Exception $e) {
             return $e->getMessage();
         }
@@ -39,7 +40,8 @@ class Profile_model extends CI_Model {
              $user =  $this->mongo_db->
                          where(array('_id'=> new MongoId($id)))->
                          get(TABLE_PROFILE);
-             return $user[0];
+            if(empty($user)) return false;            
+            return $user[0];
              
         } catch (Exception $e) {
             return $e->getMessage();
