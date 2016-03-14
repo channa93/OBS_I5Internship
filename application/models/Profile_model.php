@@ -92,7 +92,7 @@ class Profile_model extends CI_Model {
             }
             
         }catch (Exception $e){
-            return msg_exception(e.getMessage());
+            return msg_exception($e->getMessage());
             //return $this->response(msg_error(e.getMessage()));
 
         }
@@ -110,7 +110,7 @@ class Profile_model extends CI_Model {
                         update(TABLE_PROFILE);
             return $success;
         }catch(Exception $e){
-            return msg_exception($e.getMessage());
+            return msg_exception($e->getMessage());
         }
     }
 
@@ -124,7 +124,7 @@ class Profile_model extends CI_Model {
                         update(TABLE_PROFILE);
             return $success;
         }catch(Exception $e){
-            return msg_exception($e.getMessage());
+            return msg_exception($e->getMessage());
         }
     }
 
@@ -138,7 +138,7 @@ class Profile_model extends CI_Model {
             unset($data[0]['_id']);
             return $data[0];
         }catch(Exception $e){
-            return msg_exception($e.getMessage());
+            return msg_exception($e->getMessage());
         }
     }
 
@@ -152,7 +152,7 @@ class Profile_model extends CI_Model {
             //unset($data[0]['_id']);
             return $data[0];
         }catch(Exception $e){
-            return msg_exception($e.getMessage());
+            return msg_exception($e->getMessage());
         }
     }
 
@@ -167,7 +167,7 @@ class Profile_model extends CI_Model {
             $user = $this->get_profile_user_by_accessKey($profile['accessKey']);
             return $user;
         }catch(Exception $e){
-            return msg_exception($e.getMessage());
+            return msg_exception($e->getMessage());
         }     
     }
 
@@ -180,7 +180,7 @@ class Profile_model extends CI_Model {
                         update(TABLE_PROFILE);
             return $success;
         }catch(Exception $e){
-            return msg_exception($e.getMessage());
+            return msg_exception($e->getMessage());
         }
     }
 
@@ -193,7 +193,7 @@ class Profile_model extends CI_Model {
                         update(TABLE_PROFILE);
             return $success;
         }catch(Exception $e){
-            return msg_exception($e.getMessage());
+            return msg_exception($e->getMessage());
         }
     }
 

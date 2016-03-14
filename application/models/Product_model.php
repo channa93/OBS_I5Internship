@@ -20,7 +20,7 @@ class Product_model extends CI_Model{
             $product = $this->mongo_db->get(TABLE_PRODUCT);
             return msg_success($product);
         } catch (Exception $e) {
-            return msg_exception(e.getMessage());
+            return msg_exception($e->getMessage());
         }
     }
     public function get_product_by_id($id){
@@ -28,7 +28,7 @@ class Product_model extends CI_Model{
             $product = $this->mongo_db->where(array('_id' => new MongoId($id)))->get(TABLE_PRODUCT);
             return msg_success($product[0]);
         } catch (Exception $e) {
-            return msg_exception(e.getMessage());
+            return msg_exception($e->getMessage());
         }
     }
 
@@ -41,20 +41,21 @@ class Product_model extends CI_Model{
                               get(TABLE_PRODUCT);
             return msg_success($output[0]);
         } catch (Exception $e) {
-            return msg_exception(e.getMessage());
+            return msg_exception($e->getMessage());
         }
        
     }
    
    public function get_available_products(){
       try {
-          $products = $this->mongo_db->where(array('isDelete'=>false))->
-                            where_match_element('status',
-                                          array('status'=> new MongoInt32(1)))->
-                            get(TABLE_PRODUCT);
+          $products = $this->mongo_db->where(array(
+                              'isDelete'=>false,
+                              'status.status'=> new MongoInt32(1))
+                            )  
+                            ->get(TABLE_PRODUCT);
           return msg_success($products);
       } catch (Exception $e) {
-          return msg_exception($e.getMessage()); 
+          return msg_exception($e->getMessage()); 
       }
    }
 
@@ -65,15 +66,20 @@ class Product_model extends CI_Model{
           $product = $this->get_product_by_id($productId);
           return $product;
       } catch (Exception $e) {
-          return msg_exception($e.getMessage()); 
+          return msg_exception($e->getMessage()); 
       }
    }
   
    public function edit_product($updateData, $productId){
-      $status =  $this->mongo_db->where(array('_id' => new MongoId($productId)))->
+      
+      try {
+          $status =  $this->mongo_db->where(array('_id' => new MongoId($productId)))->
                         set($updateData)->update(TABLE_PRODUCT);
-      $product = $this->get_product_by_id($productId);
-      return $product;
+          $product = $this->get_product_by_id($productId);
+          return $product;
+      } catch (Exception $e) {
+          return msg_exception($e->getMessage()); 
+      }
    }
    
    

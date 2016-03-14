@@ -207,7 +207,7 @@ class ValidationField_model extends CI_Model {
             'ownerId' => '',
             'isEdit' => false,
             'isDelete' => false,
-            'createdDate' => 'Y-m-d H:m:s A',
+            'createdDate' => date('Y-m-d H:m:s A'),
             'modifiedDate' => date('Y-m-d H:m:s A')
         );
         if(!$data){
