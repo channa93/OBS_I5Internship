@@ -147,18 +147,6 @@ class Profile extends REST_Controller{
         }
     }   
 
-    // private function _param_update($update_data) {
-    //     $output = array();
-    //     foreach ($update_data as $key => $val) {
-    //         if ($val != '' || $val!=null || $val!=false || !empty($val))
-    //             $output[$key] = $val;
-    //     }
-    //     $output['modifiedDate'] = date('Y-m-d H:m:s A');
-    //     $output['isEdit'] = true;
-
-    //     return $output;
-    // }
-
 
     private function _get_random_image_name($file){
         $image_name = $file['name']; 
@@ -269,7 +257,6 @@ class Profile extends REST_Controller{
         }
             // check if that profile is exist with accessKey      
         $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
-         // var_dump($profile);
         if($profile){
             $data = $this->profile->add_money($profile, $input['money']);
             $this->_add_transaction_history($data,$input['money']);

@@ -29,7 +29,7 @@ class Profile_model extends CI_Model {
              return $user[0];
              
         } catch (Exception $e) {
-            return e.getMessage();
+            return $e->getMessage();
         }
         
     } 
@@ -42,7 +42,7 @@ class Profile_model extends CI_Model {
              return $user[0];
              
         } catch (Exception $e) {
-            return e.getMessage();
+            return $e->getMessage();
         }
         
     }
@@ -71,7 +71,7 @@ class Profile_model extends CI_Model {
              return $user;
              
         } catch (Exception $e) {
-            return msg_exception(e.getMessage());
+            return msg_exception($e->getMessage());
         }      
     }
 
