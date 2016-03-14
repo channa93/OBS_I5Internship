@@ -199,6 +199,32 @@ class Profile_model extends CI_Model {
         }
     }
 
+    public function upgrade_account($input)
+    {  
+        $toAccId = $input['accountType'];
+        $accessKey = $input['accessKey'];
+        $remainMoney = $input['remainMoney']; 
+        try{
+            $id = $this->mongo_db->where(array('accessKey'=>$accessKey))
+                         ->set(array(
+                                'accountType' => new MongoInt32($toAccId),
+                                'wallet' => $remainMoney
+                                ))
+                         ->update(TABLE_PROFILE);
+            if($id){
+                $user =  $this->get_profile_user_by_accessKey($accessKey);
+                $user['userId'] =   $user['_id']->{'$id'} ;
+                unset($user['_id']);
+                return msg_success($user);
+            }
+            return false;
+        }catch (Exception $e){
+            return msg_exception($e->getMessage());
+            //return $this->response(msg_error(e.getMessage()));
+
+        }
+    }
+
 
   
 }

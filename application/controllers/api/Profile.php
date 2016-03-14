@@ -327,6 +327,35 @@ class Profile extends REST_Controller{
     }
 
 
+    public function upgrade_account_post()
+    {
+        // check require param accessKey
+        $input = array( 
+            'accessKey' => $this->post('accessKey'),
+            'accountType' => (int)$this->post('accountTypeId'),
+            'priceCharge' => (double)$this->post('priceCharge')
+        );
+        $this->_require_parameter($input);
+        
+        // check if that profile is exist with accessKey
+        $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
+        if($profile){ // if exist then check if have enough money
+            if($profile['accountType'] >= $input['accountType']){  // 
+                $this->response(msg_error('Unableto upgrade to lower account'));
+            }
+            $remainMoney = $profile['wallet'] - $input['priceCharge'];
+            if ($remainMoney>=0) {
+                $input['remainMoney'] = $remainMoney;
+                $data = $this->profile->upgrade_account($input);
+                $this->response($data);
+            }
+            $this->response(msg_error('not enough money'));
+        }else{
+           $this->response(msg_invalidAccessKey());
+        }
+    }
+
+
 
 
 
