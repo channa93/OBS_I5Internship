@@ -56,7 +56,7 @@ class AccountType_model extends CI_Model{
     public function get_all_accounts_type(){
 
         try{
-            $accounts = $this->mongo_db->get(TABLE_ACCOUNT);
+            $accounts = $this->mongo_db->order_by(array('_id' => -1))->get(TABLE_ACCOUNT);
             $result = [];
 
             foreach($accounts as $obj){
