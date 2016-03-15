@@ -43,9 +43,9 @@ class BidRoom extends REST_Controller{
             'productId' => $this->post('productId'),
             'startDate' => $this->post('startDate'),
             'endDate' => $this->post('endDate'),
-            'startupPrice' => $this->post('endDate'),
+            'startupPrice' => $this->post('startupPrice'),
             'ownerId' => $this->post('ownerId'),
-            'title' => $this->post('title'),
+            'title' => $this->post('title')
         );
         $this->_require_parameter($input);
         
@@ -53,6 +53,7 @@ class BidRoom extends REST_Controller{
         $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
         if($profile){
             $bidroom = $this->bidroom->create_bidroom($input);
+            $this->response($bidroom);
         }else{
            $this->response(msg_invalidAccessKey());
         }

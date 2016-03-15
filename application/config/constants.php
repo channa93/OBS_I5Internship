@@ -139,9 +139,11 @@ define('GOOGLE+', 2);
 define('TITLE_LENGTH_LIMITED', 750);
 define('DESC_LENGTH_LIMITED', 200);
 
-// image upload path
-define('UPLOAD_PATH_IMAGE_PROFILE', 'upload/img/profiles');
-define('UPLOAD_PATH_IMAGE_PRODUCT', 'upload/img/products');
+	// image upload path
+// define('UPLOAD_PATH_IMAGE_PROFILE', 'upload/img/profiles');
+// define('UPLOAD_PATH_IMAGE_PRODUCT', 'upload/img/products');
+define('UPLOAD_PATH_IMAGE_PROFILE', 'uploads/img/profiles');
+define('UPLOAD_PATH_IMAGE_PRODUCT', 'uploads/img/products');
 
 // Transaction status
 
