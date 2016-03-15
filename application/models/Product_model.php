@@ -80,7 +80,37 @@ class Product_model extends CI_Model{
       } catch (Exception $e) {
           return msg_exception($e->getMessage()); 
       }
+   } 
+
+   public function delete_product($input){
+      $accessKey = $input['accessKey'];
+      $productId = $input['productId'];
+      try {
+          $status =  $this->mongo_db->where(array('_id' => new MongoId($productId)))->
+                        set('isDelete',true)->update(TABLE_PRODUCT);
+          // $product = $this->get_product_by_id($productId);
+          return $status;
+      } catch (Exception $e) {
+          return msg_exception($e->getMessage()); 
+      }
    }
+   public function get_user_products($userId){
+      $ownerId = $userId;
+      try {
+          $products =  $this->mongo_db->select(array('_id','name'))
+                        ->where(array('ownerId' => $ownerId , 'isDelete'=>false))
+                        ->get(TABLE_PRODUCT);
+          foreach ($products as $key => $value) {
+              $products[$key]['productId'] = $value['_id']->{'$id'};
+              unset($products[$key]['_id']); 
+          }
+          return $products;
+      } catch (Exception $e) {
+          return msg_exception($e->getMessage()); 
+      }
+   }
+
+
    
    
 }
