@@ -106,7 +106,10 @@ class Profile extends REST_Controller{
                 'website' => $this->post('website'),
                 'companyName' => $this->post('companyName')
             );
-           
+            foreach ($input['contactInfo'] as $key => $value) {
+                if($value==null) $input['contactInfo'][$key] = '';
+            }
+
             $number = $this->post('number');
             $email = $this->post('email');
 
@@ -259,16 +262,16 @@ class Profile extends REST_Controller{
         $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
         if($profile){
             $data = $this->profile->add_money($profile, $input['money']);
-            $this->_add_transaction_history($data,$input['money']);
+            $this->_add_transaction_history($data['_id']->{'$id'}, $input['money'], DEPOSIT);
             $this->response(msg_success($data));
         }else{
            $this->response(msg_invalidAccessKey());
         }
     }
 
-    private function _add_transaction_history($data,$amount){
-        $record['profileId'] = $data['_id'];
-        $record['type'] = new MongoInt32(1); // 1:Deposit, 2:Withdraw
+    private function _add_transaction_history($profileId,$amount,$type){
+        $record['profileId'] = $profileId;
+        $record['type'] = new MongoInt32($type); // 1:Deposit, 2:Withdraw
         $record['amount'] = new MongoInt32($amount);
         // var_dump($record);die;
         $this->transaction_history->add_transaction_history($record);
@@ -332,7 +335,7 @@ class Profile extends REST_Controller{
         // check require param accessKey
         $input = array( 
             'accessKey' => $this->post('accessKey'),
-            'accountType' => (int)$this->post('accountTypeId'),
+            'accountType' => (int)$this->post('accountType'),
             'priceCharge' => (double)$this->post('priceCharge')
         );
         $this->_require_parameter($input);
@@ -347,6 +350,7 @@ class Profile extends REST_Controller{
             if ($remainMoney>=0) {
                 $input['remainMoney'] = $remainMoney;
                 $data = $this->profile->upgrade_account($input);
+                $this->_add_transaction_history($data['data']['userId'], $input['priceCharge'], WITHDRAW);
                 $this->response($data);
             }
             $this->response(msg_error('not enough money'));

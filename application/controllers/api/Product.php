@@ -117,6 +117,7 @@ class Product extends REST_Controller{
         );
         $this->_require_parameter($input);
         $input['description'] = $this->post('description');
+        $input['name'] = $this->post('name');
         $input['productCode'] = $this->post('productCode');
         $input['price'] = (double) number_format(doubleval($this->post('price')), 2, '.', '');
 

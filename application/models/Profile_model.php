@@ -219,8 +219,8 @@ class Profile_model extends CI_Model {
             }
             return false;
         }catch (Exception $e){
-            return msg_exception($e->getMessage());
-            //return $this->response(msg_error(e.getMessage()));
+            //return msg_exception($e->getMessage());
+            return $this->response(msg_error($e->getMessage()));
 
         }
     }
