@@ -18,7 +18,12 @@ class Profile_model extends CI_Model {
     } 
 
     public function get_profile_users(){
-        return $this->mongo_db->get(TABLE_PROFILE);
+        $users =  $this->mongo_db->get(TABLE_PROFILE);
+        foreach ($users as $key => $value) {
+            $users[$key]['userId'] =  $users[$key]['_id']->{'$id'};
+            unset($users[$key]['_id']);
+        }
+        return $users;
     }
 
     public function get_profile_user_by_accessKey($accessKey){

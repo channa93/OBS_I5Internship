@@ -57,12 +57,12 @@ class Product extends REST_Controller{
         // check if that profile is exist with accessKey
         $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
         if($profile){
-            $input['ownerId'] = $profile['_id']->{'$id'};
+            $input['ownerId'] = $profile['userId'];
             unset($input['accessKey']);
             // add product then add image gallery if adding product is success
             $output = $this->product->add_product($input);
             if($output['code']==1){// success
-                $productId = $output['data']['_id']->{'$id'};
+                $productId = $output['data']['productId'];
                 $imageGallery = $this->_upload_image_gallery($_FILES, $productId);
                 $output = $this->product->add_images_product($productId, $imageGallery);       
             }
@@ -128,7 +128,7 @@ class Product extends REST_Controller{
             unset($updateData['accessKey'],$updateData['productId']);
             $output = $this->product->edit_product($updateData, $input['productId']);
             if($output['code']==1){// update success then upload image and add image url to db
-                $productId = $output['data']['_id']->{'$id'};
+                $productId = $output['data']['productId'];
                 $imageGallery = $this->_upload_image_gallery($_FILES, $productId);
                 if(!empty($imageGallery)){
                     $output = $this->product->add_images_product($productId, $imageGallery);       

@@ -17,8 +17,12 @@ class Product_model extends CI_Model{
 
     public function get_all_products(){
         try {
-            $product = $this->mongo_db->get(TABLE_PRODUCT);
-            return msg_success($product);
+            $products = $this->mongo_db->get(TABLE_PRODUCT);
+            foreach ($products as $key => $value) {
+                $products[$key]['productId'] =  $products[$key]['_id']->{'$id'};
+                unset($products[$key]['_id']);
+            }
+            return msg_success($products);
         } catch (Exception $e) {
             return msg_exception($e->getMessage());
         }
@@ -26,6 +30,8 @@ class Product_model extends CI_Model{
     public function get_product_by_id($id){
         try {
             $product = $this->mongo_db->where(array('_id' => new MongoId($id)))->get(TABLE_PRODUCT);
+            $product[0]['productId'] = $product[0]['_id']->{'$id'};
+            unset($product[0]['_id']);
             return msg_success($product[0]);
         } catch (Exception $e) {
             return msg_exception($e->getMessage());
@@ -39,6 +45,8 @@ class Product_model extends CI_Model{
             $productId = $this->mongo_db->insert(TABLE_PRODUCT, $product);
             $output = $this->mongo_db->where(array('_id' => new MongoId($productId)))->
                               get(TABLE_PRODUCT);
+            $output[0]['productId'] = $output[0]['_id']->{'$id'};
+            unset($output[0]['_id']);
             return msg_success($output[0]);
         } catch (Exception $e) {
             return msg_exception($e->getMessage());
@@ -53,6 +61,10 @@ class Product_model extends CI_Model{
                               'status.status'=> new MongoInt32(1))
                             )  
                             ->get(TABLE_PRODUCT);
+          foreach ($products as $key => $value) {
+              $products[$key]['productId'] =  $products[$key]['_id']->{'$id'};
+              unset($products[$key]['_id']);
+          }
           return msg_success($products);
       } catch (Exception $e) {
           return msg_exception($e->getMessage()); 
