@@ -2,7 +2,7 @@ application/config/config.php
 .htaccess
 .idea/
 nbproject/*
-upload/*
+uploads/*
 
 user_guide_src/build/*
 user_guide_src/cilexer/build/*
