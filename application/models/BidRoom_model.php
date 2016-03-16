@@ -32,7 +32,7 @@ class BidRoom_model extends CI_Model{
             $id = $this->mongo_db->insert(TABLE_BIDROOM, $data);
             $output = $this->mongo_db->where(array('_id' => new MongoId($id)))
                           ->get(TABLE_BIDROOM);
-            var_dump($output);die;
+            // var_dump($output);die;
             return msg_success($output[0]);
         } catch (Exception $e) {
             return msg_exception($e->getMessage());
