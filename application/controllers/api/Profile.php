@@ -262,7 +262,7 @@ class Profile extends REST_Controller{
         $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
         if($profile){
             $data = $this->profile->add_money($profile, $input['money']);
-            $this->_add_transaction_history($data['_id']->{'$id'}, $input['money'], DEPOSIT);
+            $this->_add_transaction_history($data['userId'], $input['money'], DEPOSIT);
             $this->response(msg_success($data));
         }else{
            $this->response(msg_invalidAccessKey());

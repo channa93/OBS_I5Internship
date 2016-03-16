@@ -27,7 +27,9 @@ class Profile_model extends CI_Model {
              $user =  $this->mongo_db->
                          where(array('accessKey'=> $accessKey))->
                          get(TABLE_PROFILE);
-            if(empty($user)) return false;            
+            if(empty($user)) return false;
+            $user[0]['userId'] = $user[0]['_id']->{'$id'};
+            unset($user[0]['_id']);            
             return $user[0];        
         } catch (Exception $e) {
             return $e->getMessage();
@@ -213,8 +215,6 @@ class Profile_model extends CI_Model {
                          ->update(TABLE_PROFILE);
             if($id){
                 $user =  $this->get_profile_user_by_accessKey($accessKey);
-                $user['userId'] =   $user['_id']->{'$id'} ;
-                unset($user['_id']);
                 return msg_success($user);
             }
             return false;
