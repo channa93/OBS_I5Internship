@@ -95,8 +95,6 @@ class Profile_model extends CI_Model {
                          ->set($data)->update(TABLE_PROFILE);
             if($id){
                 $user =  $this->get_profile_user_by_accessKey($data['accessKey']);
-                $user['userId'] =   $user['_id']->{'$id'} ;
-                unset($user['_id']);
                 return $user;
             }
             
