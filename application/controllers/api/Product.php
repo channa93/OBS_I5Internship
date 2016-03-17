@@ -180,7 +180,7 @@ class Product extends REST_Controller{
         $this->response(msg_error('Product does not exist or it is not a product of this user'));
     }
 
-    public function get_user_products_post()
+    public function get_products_by_user_id_post()
     {
         // check require param accessKey
         $input = array( 
