@@ -2,11 +2,11 @@
 defined('BASEPATH') or exit('No direct script access allow');
 require APPPATH.'/libraries/REST_Controller.php';
 
-/* 
+/*
  * @Copy Right Borama Consulting
- * 
+ *
  * @channa
- * 
+ *
  * @3/3/2016
  */
 
@@ -16,6 +16,9 @@ class Product extends REST_Controller{
         parent:: __construct();
         $this->load->model('Product_model', 'product');
         $this->load->model('Profile_model', 'profile');
+        $this->load->model('Category_model', 'category');
+        $this->load->model('ProductCondition_model', 'condition');
+        $this->load->model('Currency_model', 'currency');
     }
     /**
      * used to check if the input passed the required param or not
@@ -28,7 +31,7 @@ class Product extends REST_Controller{
             $this->response(msg_missingParameter($checked_param));
         }
     }
-    
+
     public function index_get(){
         $products = $this->product->get_all_products();
         $this->response($products);
@@ -39,13 +42,13 @@ class Product extends REST_Controller{
         $input = array(
             'name' => $this->post('name'),
             //'price' => (double)$this->post('price'),
-            'price' => (double) number_format(doubleval($this->post('price')), 2, '.', ''), //float with 2 decimal places: .00 
+            'price' => (double) number_format(doubleval($this->post('price')), 2, '.', ''), //float with 2 decimal places: .00
             'currencyType' => (int)$this->post('currencyType'),
             'categoryId' => (int)$this->post('currencyType'),
             'condition' => (int)$this->post('condition'),
             'accessKey' => $this->post('accessKey')
 
-        );      
+        );
         $this->_require_parameter($input);
         $input['description'] = $this->post('description');
         $input['productCode'] = $this->post('productCode');
@@ -64,7 +67,7 @@ class Product extends REST_Controller{
             if($output['code']==1){// success
                 $productId = $output['data']['productId'];
                 $imageGallery = $this->_upload_image_gallery($_FILES, $productId);
-                $output = $this->product->add_images_product($productId, $imageGallery);       
+                $output = $this->product->add_images_product($productId, $imageGallery);
             }
             $this->response($output);
         }else{
@@ -111,7 +114,7 @@ class Product extends REST_Controller{
     public function edit_product_post()
     {
         // check require param accessKey
-        $input = array( 
+        $input = array(
             'accessKey' => $this->post('accessKey'),
             'productId' => $this->post('productId')
         );
@@ -131,32 +134,32 @@ class Product extends REST_Controller{
                 $productId = $output['data']['productId'];
                 $imageGallery = $this->_upload_image_gallery($_FILES, $productId);
                 if(!empty($imageGallery)){
-                    $output = $this->product->add_images_product($productId, $imageGallery);       
+                    $output = $this->product->add_images_product($productId, $imageGallery);
                 }
             }
             $this->response($output);
 
         }else{
            $this->response(msg_invalidAccessKey());
-        } 
+        }
     }
 
     public function delete_product_post()
     {
         // check require param accessKey
-        $input = array( 
+        $input = array(
             'accessKey' => $this->post('accessKey'),
             'productId' => $this->post('productId')
         );
         $this->_require_parameter($input);
-        
+
         // check if that profile is exist with accessKey
         $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
         if($profile){
             $userId = $profile['_id']->{'$id'};
                 // check if product not exist or not own by this user
-            $this->_check_user_product_exist($userId, $input['productId']);               
-            $product = $this->product->delete_product($input);   
+            $this->_check_user_product_exist($userId, $input['productId']);
+            $product = $this->product->delete_product($input);
             $this->response(msg_success(''));
         }else{
            $this->response(msg_invalidAccessKey());
@@ -177,12 +180,42 @@ class Product extends REST_Controller{
         $this->response(msg_error('Product does not exist or it is not a product of this user'));
     }
 
-    
+    /**
+    * get all product categories, condition, and currencies
+    * @params
+    * @retun [[categories], [condition], [currencies]]
+    **/
+    public function get_cat_con_cur_post (){
+
+        //check accessKey
+        $profile = $this->profile->get_profile_user_by_accessKey($this->post('accessKey'));
+
+        if(!$profile){
+            $this->response(msg_invalidAccessKey());
+        }
+
+        //get all categories
+        $get_categories = $this->category->get_all_categories();
+
+        //get all conditions
+        $get_conditions = $this->condition->get_all_products_condition();
+
+        //get all currencies
+        $get_currencies = $this->currency->get_all_currencies();
+
+        //prepare data
+        $result[]['categories'] = $get_categories['data'];
+        $result[]['condition'] = $get_conditions['data'];
+        $result[]['currencies'] = $get_currencies['data'];
+
+        //response data with msg_success
+        $this->response(msg_success($result));
+
+    }
+
+
 
 
 
 
 }
-
-
-
