@@ -84,6 +84,7 @@ class BidRoom_model extends CI_Model{
         try {
             $bidroom = $this->get_bidroom_by_id($bidroomId);
             $ownerId = $bidroom['data']['ownerId'];
+            //var_dump($ownerId, $userId);die;
             if($ownerId === $userId) {
                 return true;
             }
@@ -92,6 +93,23 @@ class BidRoom_model extends CI_Model{
         } catch (Exception $e) {
               return msg_exception($e->getMessage()); 
         } 
+    }
+
+    public function delete_bidroom($bidroomId)
+    {
+        try {
+           $bidroom = $this->get_bidroom_by_id($bidroomId);
+           if($bidroom['code']==1){
+                $this->mongo_db->where(array('_id'=>new MongoId($bidroomId)))->delete(TABLE_BIDROOM);
+                return msg_success('');
+
+           }else{
+                return msg_error('bidroom does not exist');
+           }
+        } catch (Exception $e) {
+            return msg_exception($e->getMessage()); 
+        }
+
     }
 
 }

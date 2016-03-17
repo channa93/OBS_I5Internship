@@ -35,6 +35,24 @@ class BidRoom extends REST_Controller{
         $this->response($products);
     }
 
+    public function get_all_bidrooms_post()
+    {
+        // check require param accessKey
+        $input = array( 
+            'accessKey' => $this->post('accessKey')
+        );
+        $this->_require_parameter($input);
+        
+        // check if that profile is exist with accessKey
+        $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
+        if($profile){
+            $bidrooms = $this->bidroom->get_all_bidrooms();
+            $this->response($bidrooms);
+        }else{
+           $this->response(msg_invalidAccessKey());
+        }
+    }
+
     public function create_bidroom_post()
     {
         // check require param accessKey
@@ -108,8 +126,29 @@ class BidRoom extends REST_Controller{
         }
     }
 
-    public function delete_bidroom($value='')
+    public function delete_bidroom_post()
     {
-        # code...
+        // check require param accessKey
+        $input = array( 
+            'accessKey' => $this->post('accessKey'),
+            'bidroomId' => $this->post('bidroomId')
+        );
+        $this->_require_parameter($input);
+        
+        // check if that profile is exist with accessKey
+        $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
+        if($profile){
+            $isOwner = $this->bidroom->check_bidroom_owner($input['bidroomId'], $profile['userId']);
+            // var_dump($isOwner,$profile, $input['bidroomId']);die;
+            if($isOwner){
+                $response = $this->bidroom->delete_bidroom($input['bidroomId']);
+                $this->response($response);
+
+            }else{
+                $this->response(msg_error('this bidroom not belong to you'));
+            }
+        }else{
+           $this->response(msg_invalidAccessKey());
+        }
     }
 }

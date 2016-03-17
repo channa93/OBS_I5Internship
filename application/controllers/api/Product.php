@@ -153,7 +153,7 @@ class Product extends REST_Controller{
         // check if that profile is exist with accessKey
         $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
         if($profile){
-            $userId = $profile['_id']->{'$id'};
+            $userId = $profile['userId'];
                 // check if product not exist or not own by this user
             $this->_check_user_product_exist($userId, $input['productId']);               
             $product = $this->product->delete_product($input);   
@@ -175,6 +175,28 @@ class Product extends REST_Controller{
         }
         if($isExist) return true;
         $this->response(msg_error('Product does not exist or it is not a product of this user'));
+    }
+
+    public function get_user_products_post()
+    {
+        // check require param accessKey
+        $input = array( 
+            'accessKey' => $this->post('accessKey'),
+        );
+        $this->_require_parameter($input);
+        
+        // check if that profile is exist with accessKey
+        $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
+        if($profile){
+            $userId = $profile['userId'];
+            $products = $this->product->get_user_products($userId);
+            if(!empty($products)){
+                $this->response(msg_success($products));
+            }
+            $this->response(msg_error('no product'));
+        }else{
+           $this->response(msg_invalidAccessKey());
+        }
     }
 
     
