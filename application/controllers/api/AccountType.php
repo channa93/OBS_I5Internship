@@ -2,21 +2,21 @@
 defined('BASEPATH') or exit('No direct script access allow');
 require APPPATH.'/libraries/REST_Controller.php';
 
-/* 
+/*
  * @Copy Right Borama Consulting
- * 
+ *
  * @sokunthearith
- * 
+ *
  * @3/3/2016
  */
 
 class AccountType extends REST_Controller{
-    
+
     function __construct(){
         parent:: __construct();
         $this->load->model('AccountType_model', 'account');
     }
-    
+
     private function _require_parameter($input){
         $checked_param = require_parameter($input);
         if($checked_param !== TRUE ){
@@ -65,7 +65,7 @@ class AccountType extends REST_Controller{
         $output['modifiedDate'] = date('Y-m-d H:m:s A');
         return $output;
     }
-    
+
     public function add_account_type_post(){
         $params = array(
             'type' => $this->post('type'),
@@ -89,13 +89,13 @@ class AccountType extends REST_Controller{
 
         $input['type'] = $this->post('type');
         $input['priceCharge'] = (double)($this->post('priceCharge'));
-        $input['features'] = $this->post('features');
-        
+        $input['features'] = json_decode($this->post('features'));
+
         $response = $this->account->add_account_type($input);
         $this->response($response);
-        
+
     }
-    
+
     public function get_all_accounts_type_post(){
 
         //check profile exist
@@ -105,15 +105,15 @@ class AccountType extends REST_Controller{
 
         $this->response($response);
     }
-    
+
     public function update_account_type_post(){
         $params = array(
             'accountId' => $this->post('accountId')
         );
-        
+
         //check profile exist
         $this->_check_profile_exist($this->post('accessKey'));
-        
+
         //check require params
         $this->_require_parameter($params);
 
@@ -128,7 +128,7 @@ class AccountType extends REST_Controller{
 
         $input['type'] = $this->post('type');
         $input['priceCharge'] = (double)($this->post('priceCharge'));
-        $input['features'] = $this->post('features');
+        $input['features'] = json_decode($this->post('features'));
 
         //update field that is empty or null
         $update_account_type = $this->_update_params($input,$accountId);
@@ -144,7 +144,7 @@ class AccountType extends REST_Controller{
         $this->response($response);
         
     }
-    
+
     public function delete_account_type_post(){
 
         $params = array(
@@ -168,6 +168,3 @@ class AccountType extends REST_Controller{
     }
 
 }
-
-
-
