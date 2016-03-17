@@ -117,7 +117,6 @@ if (!function_exists('base_url')) {
 if (!function_exists('validate_file_type')) {
 
     function validate_file_type($file) {
-
         $allowedExts = array("gif", "jpeg", "jpg", "png","PNG","JPEG");
         $allowedType = array("image/gif", "image/jpeg", "image/jpg", "image/pjpeg", "image/x-png", "image/png");
         $temp = explode(".", $file["name"]);

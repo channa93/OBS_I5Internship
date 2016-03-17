@@ -74,7 +74,13 @@ class Category_model extends CI_Model{
 
     public function get_category_by_id($id){
         try{
-            return $this->mongo_db->where(array('_id' => new MongoInt32($id)))->get(TABLE_CATEGORY);
+            $category = $this->mongo_db->where(array('_id' => new MongoInt32($id)))->get(TABLE_CATEGORY);
+            if(empty($category)) return msg_error('categoryId: '.$id.' not exist');
+            $category = $category[0];
+            $category['categoryId'] = $category['_id'];
+            unset($category['_id'],$category['createdDate'], $category['modifiedDate']);
+
+            return msg_success($category);
         } catch(Exception $e){
             return msg_exception($e->getMessage());
         }
@@ -116,6 +122,21 @@ class Category_model extends CI_Model{
 
             }
         }catch(Exception $e){
+            return msg_exception($e->getMessage());
+        }
+    }
+
+    public function get_categories_by_ids($categoryIds)
+    {
+        try{
+            $categories = [];       
+            for ($i=0; $i < count($categoryIds) ; $i++) { 
+                $category = $this->category->get_category_by_id($categoryIds[$i]);
+                if(!empty($category['data']))
+                   array_push($categories, $category['data']);
+            }
+            return msg_success($categories);         
+        } catch(Exception $e){
             return msg_exception($e->getMessage());
         }
     }

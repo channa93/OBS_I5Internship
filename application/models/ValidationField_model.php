@@ -229,7 +229,6 @@ class ValidationField_model extends CI_Model {
     public function bidroom($data){
 
         $template_fields = array(
-            '_id' => new MongoId(),
             'title' => '',
             'startupPrice' => 0,
             'finalPrice' => -1,
