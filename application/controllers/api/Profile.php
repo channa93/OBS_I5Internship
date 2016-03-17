@@ -77,8 +77,6 @@ class Profile extends REST_Controller{
 
     public function add_user($params) {        
         $user = $this->profile->add_user($params);
-        $user['userId'] = $user['_id']->{'$id'};
-        unset($user['_id']);
         $user['message'] = "** Welcome new user! ";
         $data = msg_success($user); 
         return $this->response($data);
