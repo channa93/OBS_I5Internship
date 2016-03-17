@@ -31,7 +31,7 @@ class BidRoom extends REST_Controller{
     }
     
     public function index_get(){
-        $products = $this->product->get_all_products();
+        $products = $this->bidroom->get_all_bidrooms();
         $this->response($products);
     }
 
@@ -52,14 +52,64 @@ class BidRoom extends REST_Controller{
         // check if that profile is exist with accessKey
         $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
         if($profile){
+            unset($input['accessKey']);
             $bidroom = $this->bidroom->create_bidroom($input);
             $this->response($bidroom);
         }else{
            $this->response(msg_invalidAccessKey());
         }
     }
+    public function get_bidroom_by_id_post()
+    {
+        // check require param accessKey
+        $input = array( 
+            'accessKey' => $this->post('accessKey'),
+            'bidroomId' => $this->post('bidroomId')
+        );
+        $this->_require_parameter($input);
+        
+        // check if that profile is exist with accessKey
+        $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
+        if($profile){
+            $bidroom = $this->bidroom->get_bidroom_by_id($input['bidroomId']);
+            $this->response($bidroom);
+        }else{
+           $this->response(msg_invalidAccessKey());
+        }
+    }
 
+    public function edit_bidroom_post()
+    {
+        // check require param accessKey
+        $input = array( 
+            'accessKey' => $this->post('accessKey'),
+            'bidroomId' => $this->post('bidroomId')
+        );
+        $this->_require_parameter($input);
+        $input['title'] = $this->post('title');
+        $input['startupPrice'] = $this->post('startupPrice');
+        
+        // check if that profile is exist with accessKey
+        $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
+        if($profile){
+            $bidroomId = $input['bidroomId'];
+            $isOwner = $this->bidroom->check_bidroom_owner($bidroomId, $profile['userId']);
+            if($isOwner){
+                $updateData = filter_param_update($input);
+                unset($updateData['accessKey'], $updateData['bidroomId']);
+                $bidroom = $this->bidroom->edit_bidroom($updateData, $bidroomId);
+                $this->response($bidroom);
+            }else{
+                $this->response(msg_error('this bidroom not belong to you'));
+            }
+                  
+        }else{
+           $this->response(msg_invalidAccessKey());
+        }
+    }
 
-
-
+    public function delete_bidroom($value='')
+    {
+        # code...
+    }
 }

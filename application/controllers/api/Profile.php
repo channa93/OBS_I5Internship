@@ -77,8 +77,6 @@ class Profile extends REST_Controller{
 
     public function add_user($params) {        
         $user = $this->profile->add_user($params);
-        $user['userId'] = $user['_id']->{'$id'};
-        unset($user['_id']);
         $user['message'] = "** Welcome new user! ";
         $data = msg_success($user); 
         return $this->response($data);
@@ -357,6 +355,25 @@ class Profile extends REST_Controller{
         }else{
            $this->response(msg_invalidAccessKey());
         }
+    }
+
+    public function get_profile_user_by_id_post()
+    {
+        // check require param accessKey
+        $input = array( 
+            'accessKey' => $this->post('accessKey'),
+            'userId' => $this->post('userId')
+        );
+        $this->_require_parameter($input);
+        
+        // check if that profile is exist with accessKey
+        $profile = $this->profile->get_profile_user_by_id($input['userId']);
+        if($profile){
+            $this->response($profile);
+        }else{
+           $this->response(msg_invalidAccessKey());
+        }
+
     }
 
 

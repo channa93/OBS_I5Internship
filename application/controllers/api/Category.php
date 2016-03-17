@@ -170,8 +170,28 @@ class Category extends REST_Controller{
         $this->response($response);
 
     }
+
+    // added by channa as requested by iOS) : 3/17/16 
     
-    
+    public function get_categories_by_ids_post(){ // get cateogries by array of ids
+
+        $params = array(
+            'categoryIds' => $this->post('categoryIds')
+        );
+
+        $this->_require_parameter($params);
+
+        //check profile exist
+        $this->_check_profile_exist($this->post('accessKey'));
+  
+        $categoryIds = json_decode($params['categoryIds'], true);
+        $response = $this->category->get_categories_by_ids($categoryIds);
+        if(empty($response['data'])){
+            $this->response(msg_error('category  does not exist'));
+        }
+        $this->response($response);
+
+    }
     
     
     

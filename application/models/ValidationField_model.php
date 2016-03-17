@@ -229,15 +229,16 @@ class ValidationField_model extends CI_Model {
     public function bidroom($data){
 
         $template_fields = array(
-            '_id' => new MongoId(),
             'title' => '',
             'startupPrice' => 0,
             'finalPrice' => -1,
-            'createdDate' => date('Y-m-d H:m:s A'),
             'ownerId' => '',
             'productId' => '',
             'startDate' => date('Y-m-d H:m:s A'),
-            'endDate' => date('Y-m-d H:m:s A')
+            'endDate' => date('Y-m-d H:m:s A'),
+            'isEdit' => false,
+            'createdDate' => date('Y-m-d H:m:s A'),
+            'modifiedDate' => date('Y-m-d H:m:s A')
         );
         if(!$data){
             return $template_fields;
@@ -245,10 +246,6 @@ class ValidationField_model extends CI_Model {
 
         $output = $this->_prepare_input($template_fields, $data);
         return $output;
-    }
-
-    
-    
-   
+    }   
 
 }

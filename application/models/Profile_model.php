@@ -15,6 +15,7 @@ class Profile_model extends CI_Model {
         parent::__construct();
         $this->load->model('General_model','general');
         $this->load->model('ValidationField_model','vilidateField');
+        $this->load->model('Category_model','category');
     } 
 
     public function get_profile_users(){
@@ -33,9 +34,22 @@ class Profile_model extends CI_Model {
                          where(array('accessKey'=> $accessKey))->
                          get(TABLE_PROFILE);
             if(empty($user)) return false;
-            $user[0]['userId'] = $user[0]['_id']->{'$id'};
-            unset($user[0]['_id']);            
-            return $user[0];        
+            $user = $user[0];
+        /*    // check interestCategory
+            if(count($user['interestCategoryId'])>0){
+                $interestCategory = [];
+                $categoryIds = $user['interestCategoryId'];
+                for ($i=0; $i < count($categoryIds) ; $i++) { 
+                    $category = $this->category->get_category_by_id($categoryIds[$i]);
+                    array_push($interestCategory, $category['data']);
+                }
+            }
+            $user['interestCategory'] = $interestCategory;
+            unset($user['interestCategoryId']);
+        */
+            $user['userId'] = $user['_id']->{'$id'};
+            unset($user['_id']);
+            return $user;        
         } catch (Exception $e) {
             return $e->getMessage();
         }
@@ -47,8 +61,10 @@ class Profile_model extends CI_Model {
              $user =  $this->mongo_db->
                          where(array('_id'=> new MongoId($id)))->
                          get(TABLE_PROFILE);
-            if(empty($user)) return false;            
-            return $user[0];
+            if(empty($user)) return false;
+            $user[0]['userId'] = $user[0]['_id']->{'$id'};
+            unset($user[0]['_id']);            
+            return msg_success($user[0]);
              
         } catch (Exception $e) {
             return $e->getMessage();
@@ -85,11 +101,7 @@ class Profile_model extends CI_Model {
     }
 
     public function edit_profile($data){
-
-        // foreach($_FILES as $image){
-        //     var_dump($image);
-        // }
-        
+ 
         try{
             $id = $this->mongo_db->where(array('accessKey'=>$data['accessKey']))
                          ->set($data)->update(TABLE_PROFILE);

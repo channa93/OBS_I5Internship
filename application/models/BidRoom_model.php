@@ -13,12 +13,18 @@ class BidRoom_model extends CI_Model{
     function __construct() {
         parent::__construct();
         $this->load->model('ValidationField_model','validateField');
+        $this->load->model('Product_model','product');
+        $this->load->model('Profile_model','profile');
     }
 
-    public function get_all_products(){
+    public function get_all_bidrooms(){
         try {
-            $product = $this->mongo_db->get(TABLE_PRODUCT);
-            return msg_success($product);
+            $bidrooms = $this->mongo_db->get(TABLE_BIDROOM);
+            foreach ($bidrooms as $key => $value) {
+                $bidrooms[$key]['bidroomId'] =  $bidrooms[$key]['_id']->{'$id'};
+                unset($bidrooms[$key]['_id']);
+            }
+            return msg_success($bidrooms);
         } catch (Exception $e) {
             return msg_exception($e->getMessage());
         }
@@ -26,17 +32,66 @@ class BidRoom_model extends CI_Model{
 
     public function create_bidroom($data)
     {
+        
         try {
             $data = $this->validateField->bidroom($data);
-            var_dump($data);die;
             $id = $this->mongo_db->insert(TABLE_BIDROOM, $data);
             $output = $this->mongo_db->where(array('_id' => new MongoId($id)))
                           ->get(TABLE_BIDROOM);
-            // var_dump($output);die;
+            $output[0]['bidroomId'] =  $output[0]['_id']->{'$id'};
+            unset($output[0]['_id']);
+                // for future get all data if client needs
+            // $userInfo = $this->profile->get_profile_user_by_id($data['ownerId']);
+            // $productInfo = $this->product->get_product_by_id($data['productId']);
+            // $output[0]['productInfo'] = $productInfo['data'];
+            // $output[0]['userInfo'] = $userInfo['data'];
             return msg_success($output[0]);
         } catch (Exception $e) {
             return msg_exception($e->getMessage());
         }
+    }
+
+    public function get_bidroom_by_id($bidroomId)
+    {
+        try {
+            $bidroomId = new MongoId($bidroomId);
+            $bidroom = $this->mongo_db->where(array('_id' => $bidroomId))
+                                ->get(TABLE_BIDROOM);
+            if(empty($bidroom)) return msg_error('bidroom , id='.$bidroomId." does not exist");
+            $bidroom[0]['bidroomId'] =  $bidroom[0]['_id']->{'$id'};
+            unset($bidroom[0]['_id']);
+            return msg_success($bidroom[0]);
+        } catch (Exception $e) {
+            return msg_exception($e->getMessage());
+        }
+        
+    }
+
+    public function edit_bidroom($updateData, $bidroomId)
+    {
+        try {
+            $status =  $this->mongo_db->where(array('_id' => new MongoId($bidroomId)))->
+                        set($updateData)->update(TABLE_BIDROOM);
+            $bidroom = $this->get_bidroom_by_id($bidroomId);
+            return $bidroom;
+        } catch (Exception $e) {
+              return msg_exception($e->getMessage()); 
+        } 
+    }
+
+    public function check_bidroom_owner($bidroomId, $userId)
+    {
+        try {
+            $bidroom = $this->get_bidroom_by_id($bidroomId);
+            $ownerId = $bidroom['data']['ownerId'];
+            if($ownerId === $userId) {
+                return true;
+            }
+            else return false;
+            
+        } catch (Exception $e) {
+              return msg_exception($e->getMessage()); 
+        } 
     }
 
 }
