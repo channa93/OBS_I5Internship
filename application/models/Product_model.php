@@ -109,7 +109,7 @@ class Product_model extends CI_Model{
    public function get_user_products($userId){
       $ownerId = $userId;
       try {
-          $products =  $this->mongo_db->select(array('_id','name'))
+          $products =  $this->mongo_db->select(array('_id','name','imageGallery'))
                         ->where(array('ownerId' => $ownerId , 'isDelete'=>false))
                         ->get(TABLE_PRODUCT);
           foreach ($products as $key => $value) {
