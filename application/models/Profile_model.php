@@ -101,11 +101,7 @@ class Profile_model extends CI_Model {
     }
 
     public function edit_profile($data){
-
-        // foreach($_FILES as $image){
-        //     var_dump($image);
-        // }
-        
+ 
         try{
             $id = $this->mongo_db->where(array('accessKey'=>$data['accessKey']))
                          ->set($data)->update(TABLE_PROFILE);
