@@ -369,7 +369,7 @@ class Profile extends REST_Controller{
         // check if that profile is exist with accessKey
         $profile = $this->profile->get_profile_user_by_id($input['userId']);
         if($profile){
-            $this->response(msg_success($profile));
+            $this->response($profile);
         }else{
            $this->response(msg_invalidAccessKey());
         }
