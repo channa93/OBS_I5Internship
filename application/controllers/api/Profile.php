@@ -57,9 +57,8 @@ class Profile extends REST_Controller{
         if($data){ // profile already exist
             $data['message'] = "** Welcome back, ".$data['firstName']." ".$data['lastName']."!";
             $this->response(msg_success($data));
-        }else{  // not exist , then creat new user
-            $user = $this->add_user($input);
-            $this->response(msg_success($user));
+        }else{  // not exist , then create new user and response 
+            $user = $this->add_user($input); 
         }    
     }
     private function _check_username_exsit($firstName, $lastName){
@@ -77,9 +76,8 @@ class Profile extends REST_Controller{
 
     public function add_user($params) {        
         $user = $this->profile->add_user($params);
-        $user['message'] = "** Welcome new user! ";
-        $data = msg_success($user); 
-        return $this->response($data);
+        $user['message'] = "** Welcome new user! ";  
+        return $this->response($user);
     }
 
         /*****Edit profile*/
@@ -93,7 +91,7 @@ class Profile extends REST_Controller{
         // check if that profile is exist with accessKey     
         $accessKey = $this->post('accessKey');
         $profile = $this->profile->get_profile_user_by_accessKey($accessKey);
-        if($profile){
+        if($profile){ // exist
             $data = $profile;
             $input['firstName'] = $this->post('firstName');
             $input['lastName'] = $this->post('lastName');
@@ -104,6 +102,8 @@ class Profile extends REST_Controller{
                 'website' => $this->post('website'),
                 'companyName' => $this->post('companyName')
             );
+
+            // filter if null then set to empty string (easy client put in screen)
             foreach ($input['contactInfo'] as $key => $value) {
                 if($value==null) $input['contactInfo'][$key] = '';
             }
@@ -111,6 +111,7 @@ class Profile extends REST_Controller{
             $number = $this->post('number');
             $email = $this->post('email');
 
+            // check image to upload
             if(isset($_FILES['avatar'])){                  
                 $file_name_upload = upload_file(UPLOAD_PATH_IMAGE_PROFILE,$_FILES['avatar']);
                 if(is_array($file_name_upload)){ // error
@@ -122,6 +123,7 @@ class Profile extends REST_Controller{
                     $input['avatar'] = base_url().UPLOAD_PATH_IMAGE_PROFILE.'/'.$file_name_upload;
                 }   
             }
+            //prepare phone and email since they are array of objects
             if(isset($number)){
                 $input['phones'][] = array(
                     'countryCode' => '+855',
@@ -148,7 +150,7 @@ class Profile extends REST_Controller{
         }
     }   
 
-
+    // generate image name 
     private function _get_random_image_name($file){
         $image_name = $file['name']; 
         $full_name = rand(0,9).rand(0,9).rand(0,9).rand(0,9).rand(0,9).rand(0,9).rand(0,9).rand(0,9).round(microtime(true)) . basename($file['name']);
@@ -170,7 +172,7 @@ class Profile extends REST_Controller{
             // check if that profile is exist with accessKey     
         $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
          
-        if($profile){
+        if($profile){ // exist
             $status = $this->profile->add_interest_category($input);
             if($status === true){
                 $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
@@ -195,9 +197,9 @@ class Profile extends REST_Controller{
             // check if that profile is exist with accessKey     
         $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
          
-        if($profile){
+        if($profile){ // profile is exist
             $status = $this->profile->delete_interest_category($input);
-            if($status === true){
+            if($status === true){ // delete success then render data to user
                 $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
                 $this->response(msg_success($profile));
             }else{

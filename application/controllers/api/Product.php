@@ -127,9 +127,12 @@ class Product extends REST_Controller{
         // check if that profile is exist with accessKey
         $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
         if($profile){
+            // prepare data for update
             $updateData = filter_param_update($input);
             unset($updateData['accessKey'],$updateData['productId']);
             $output = $this->product->edit_product($updateData, $input['productId']);
+            
+            // check if update success
             if($output['code']==1){// update success then upload image and add image url to db
                 $productId = $output['data']['productId'];
                 $imageGallery = $this->_upload_image_gallery($_FILES, $productId);
