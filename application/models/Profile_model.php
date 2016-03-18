@@ -51,6 +51,7 @@ class Profile_model extends CI_Model {
             unset($user['_id']);
             $user['totalSubscriber'] = count($user['subscriber']);
             return $user;        
+
         } catch (Exception $e) {
             return $e->getMessage();
         }
@@ -192,10 +193,11 @@ class Profile_model extends CI_Model {
     public function add_subscriber($input){
         $subscriberId = $input['subscriberId'];
         $accessKey = $input['accessKey'];
+        $otherUserId = $input['otherUserId'];
        
         try{
             // push id into subscriber array
-            $success = $this->mongo_db->where(array('accessKey' => $accessKey)) ->
+            $success = $this->mongo_db->where(array('_id' => new MongoId($otherUserId))) ->
                         push(array('subscriber' => $subscriberId)) ->
                         update(TABLE_PROFILE);
             return $success;
@@ -206,9 +208,9 @@ class Profile_model extends CI_Model {
 
     public function delete_subscriber($input){
         $subscriberId = $input['subscriberId'];
-        $accessKey = $input['accessKey'];
+        $otherUserId = $input['otherUserId'];
         try{
-            $success = $this->mongo_db->where(array('accessKey' => $accessKey)) ->
+            $success = $this->mongo_db->where(array('_id' => new MongoId($otherUserId))) ->
                         pull('subscriber' , $subscriberId) ->
                         update(TABLE_PROFILE);
             return $success;
