@@ -49,6 +49,7 @@ class Profile_model extends CI_Model {
         */
             $user['userId'] = $user['_id']->{'$id'};
             unset($user['_id']);
+            $user['totalSubscriber'] = count($user['subscriber']);
             return $user;        
         } catch (Exception $e) {
             return $e->getMessage();
@@ -63,17 +64,15 @@ class Profile_model extends CI_Model {
                          get(TABLE_PROFILE);
             if(empty($user)) return false;
             $user[0]['userId'] = $user[0]['_id']->{'$id'};
-            unset($user[0]['_id']);            
-            return msg_success($user[0]);
-             
+            unset($user[0]['_id']);
+            $user[0]['totalSubscriber'] = count($user[0]['subscriber']);            
+            return msg_success($user[0]);         
         } catch (Exception $e) {
             return $e->getMessage();
         }
         
     }
 
-    
-    
     public function login($data){     
         $get_profile = $this->general->get_profile_by_social_id($data['socialId'], $data['socialType']);
         if(!empty($get_profile)){    
@@ -199,8 +198,6 @@ class Profile_model extends CI_Model {
             $success = $this->mongo_db->where(array('accessKey' => $accessKey)) ->
                         push(array('subscriber' => $subscriberId)) ->
                         update(TABLE_PROFILE);
-            // update total subscriber field 
-            $this->_update_total_subscriber($accessKey);
             return $success;
         }catch(Exception $e){
             return msg_exception($e->getMessage());
@@ -214,27 +211,12 @@ class Profile_model extends CI_Model {
             $success = $this->mongo_db->where(array('accessKey' => $accessKey)) ->
                         pull('subscriber' , $subscriberId) ->
                         update(TABLE_PROFILE);
-            // update total subscriber field 
-            $this->_update_total_subscriber($accessKey);
             return $success;
         }catch(Exception $e){
             return msg_exception($e->getMessage());
         }
     }
-    public function _update_total_subscriber($accessKey)
-    {
-        try {
-            $subscriber = $this->mongo_db->select(array('subscriber'))
-                                   ->where(array('accessKey' => $accessKey))->get(TABLE_PROFILE);
-            $total = count($subscriber[0]['subscriber']);
-            $this->mongo_db->where(array('accessKey'=>$accessKey))
-                           ->set('totalSubscriber', new MongoInt32($total))->update(TABLE_PROFILE);
-            return true;
-        } catch (Exception $e) {
-            return msg_exception($e->getMessage());
-        }
-    }
-
+   
     public function upgrade_account($input)
     {  
         $toAccId = $input['accountType'];

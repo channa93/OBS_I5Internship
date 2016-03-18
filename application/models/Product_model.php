@@ -20,6 +20,7 @@ class Product_model extends CI_Model{
             $products = $this->mongo_db->get(TABLE_PRODUCT);
             foreach ($products as $key => $value) {
                 $products[$key]['productId'] =  $products[$key]['_id']->{'$id'};
+                $products[$key]['totalLikes'] =  count($products[$key]['likerId']);
                 unset($products[$key]['_id']);
             }
             return msg_success($products);
@@ -32,6 +33,8 @@ class Product_model extends CI_Model{
             $product = $this->mongo_db->where(array('_id' => new MongoId($id)))->get(TABLE_PRODUCT);
             $product[0]['productId'] = $product[0]['_id']->{'$id'};
             unset($product[0]['_id']);
+            $product[0]['totalLikes'] =  count($product[0]['likerId']);
+
             return msg_success($product[0]);
         } catch (Exception $e) {
             return msg_exception($e->getMessage());
@@ -43,11 +46,8 @@ class Product_model extends CI_Model{
         try {
             $product = $this->validateField->product($product);
             $productId = $this->mongo_db->insert(TABLE_PRODUCT, $product);
-            $output = $this->mongo_db->where(array('_id' => new MongoId($productId)))->
-                              get(TABLE_PRODUCT);
-            $output[0]['productId'] = $output[0]['_id']->{'$id'};
-            unset($output[0]['_id']);
-            return msg_success($output[0]);
+            $output = $this->get_product_by_id($productId);
+            return msg_success($output['data']);
         } catch (Exception $e) {
             return msg_exception($e->getMessage());
         }
@@ -63,6 +63,8 @@ class Product_model extends CI_Model{
                             ->get(TABLE_PRODUCT);
           foreach ($products as $key => $value) {
               $products[$key]['productId'] =  $products[$key]['_id']->{'$id'};
+              $products[$key]['totalLikes'] =  count($products[$key]['likerId']);
+
               unset($products[$key]['_id']);
           }
           return msg_success($products);
@@ -109,11 +111,12 @@ class Product_model extends CI_Model{
    public function get_user_products($userId){
       $ownerId = $userId;
       try {
-          $products =  $this->mongo_db->select(array('_id','name','imageGallery'))
+          $products =  $this->mongo_db->select(array('_id','name','imageGallery','likerId'))
                         ->where(array('ownerId' => $ownerId , 'isDelete'=>false))
                         ->get(TABLE_PRODUCT);
           foreach ($products as $key => $value) {
               $products[$key]['productId'] = $value['_id']->{'$id'};
+              $products[$key]['totalLikes'] =  count($value['likerId']);
               unset($products[$key]['_id']); 
           }
           return $products;
