@@ -168,8 +168,7 @@ if (!function_exists('validate_email')) {
           } else {
             return false;
           }
-    }
-   
+    }  
 }
 if (!function_exists('create_folder')) {
     function create_folder($folderName, $fullPath = false) {

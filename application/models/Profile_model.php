@@ -193,10 +193,14 @@ class Profile_model extends CI_Model {
     public function add_subscriber($input){
         $subscriberId = $input['subscriberId'];
         $accessKey = $input['accessKey'];
+       
         try{
+            // push id into subscriber array
             $success = $this->mongo_db->where(array('accessKey' => $accessKey)) ->
                         push(array('subscriber' => $subscriberId)) ->
                         update(TABLE_PROFILE);
+            // update total subscriber field 
+            $this->_update_total_subscriber($accessKey);
             return $success;
         }catch(Exception $e){
             return msg_exception($e->getMessage());
@@ -210,8 +214,23 @@ class Profile_model extends CI_Model {
             $success = $this->mongo_db->where(array('accessKey' => $accessKey)) ->
                         pull('subscriber' , $subscriberId) ->
                         update(TABLE_PROFILE);
+            // update total subscriber field 
+            $this->_update_total_subscriber($accessKey);
             return $success;
         }catch(Exception $e){
+            return msg_exception($e->getMessage());
+        }
+    }
+    public function _update_total_subscriber($accessKey)
+    {
+        try {
+            $subscriber = $this->mongo_db->select(array('subscriber'))
+                                   ->where(array('accessKey' => $accessKey))->get(TABLE_PROFILE);
+            $total = count($subscriber[0]['subscriber']);
+            $this->mongo_db->where(array('accessKey'=>$accessKey))
+                           ->set('totalSubscriber', new MongoInt32($total))->update(TABLE_PROFILE);
+            return true;
+        } catch (Exception $e) {
             return msg_exception($e->getMessage());
         }
     }
