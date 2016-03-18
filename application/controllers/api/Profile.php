@@ -284,10 +284,10 @@ class Profile extends REST_Controller{
         $input = array(
             'accessKey' => $this->post('accessKey'),
             'subscriberId' => $this->post('subscriberId'),
-            'otherUserId' => $this->post('otherUserId'),
+            'otherUserId' => $this->post('otherUserId')
         );
         $this->_require_parameter($input);
-
+        //var_dump($input);die;
         // check if that profile is exist with accessKey      
         $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
        
