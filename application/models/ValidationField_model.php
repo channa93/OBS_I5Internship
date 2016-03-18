@@ -60,6 +60,7 @@ class ValidationField_model extends CI_Model {
             'interestCategoryId' => array(),
             'socialAccount' => array(), //{socialId, type}  , type 1:FACEBOOK,2:GOOGLE+
             'subscriber' => array(),
+            // 'totalSubscriber' => new MongoInt32(0),
             'wallet' => 100,
             'hits' => 0,
             'status' => ACTIVE,

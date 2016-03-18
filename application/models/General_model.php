@@ -32,6 +32,7 @@ class General_model extends CI_Model {
                 $get_profile[0]['userId'] = $get_profile[0]['_id']->{'$id'};
                 //if(empty($get_profile[0]['avatar'])) $get_profile[0]['avatar'] = DEFAULT_PROFILE_AVATAR;
                 unset($get_profile[0]['_id']);
+                $get_profile[0]['totalSubscriber'] = count($get_profile[0]['subscriber']);
                 return $get_profile[0];
             }
             return FALSE;

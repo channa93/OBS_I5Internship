@@ -49,6 +49,7 @@ class Profile_model extends CI_Model {
         */
             $user['userId'] = $user['_id']->{'$id'};
             unset($user['_id']);
+            $user['totalSubscriber'] = count($user['subscriber']);
             return $user;        
         } catch (Exception $e) {
             return $e->getMessage();
@@ -63,17 +64,15 @@ class Profile_model extends CI_Model {
                          get(TABLE_PROFILE);
             if(empty($user)) return false;
             $user[0]['userId'] = $user[0]['_id']->{'$id'};
-            unset($user[0]['_id']);            
-            return msg_success($user[0]);
-             
+            unset($user[0]['_id']);
+            $user[0]['totalSubscriber'] = count($user[0]['subscriber']);            
+            return msg_success($user[0]);         
         } catch (Exception $e) {
             return $e->getMessage();
         }
         
     }
 
-    
-    
     public function login($data){     
         $get_profile = $this->general->get_profile_by_social_id($data['socialId'], $data['socialType']);
         if(!empty($get_profile)){    
@@ -193,7 +192,9 @@ class Profile_model extends CI_Model {
     public function add_subscriber($input){
         $subscriberId = $input['subscriberId'];
         $accessKey = $input['accessKey'];
+       
         try{
+            // push id into subscriber array
             $success = $this->mongo_db->where(array('accessKey' => $accessKey)) ->
                         push(array('subscriber' => $subscriberId)) ->
                         update(TABLE_PROFILE);
@@ -215,7 +216,7 @@ class Profile_model extends CI_Model {
             return msg_exception($e->getMessage());
         }
     }
-
+   
     public function upgrade_account($input)
     {  
         $toAccId = $input['accountType'];
