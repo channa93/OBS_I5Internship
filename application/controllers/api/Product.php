@@ -183,11 +183,11 @@ class Product extends REST_Controller{
     public function get_products_by_user_id_post()
     {
         // check require param accessKey
-        $input = array( 
+        $input = array(
             'accessKey' => $this->post('accessKey'),
         );
         $this->_require_parameter($input);
-        
+
         // check if that profile is exist with accessKey
         $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
         if($profile){
@@ -202,7 +202,7 @@ class Product extends REST_Controller{
         }
     }
 
-    
+
     /**
     * get all product categories, condition, and currencies
     * @params
@@ -226,9 +226,9 @@ class Product extends REST_Controller{
         $get_currencies = $this->currency->get_all_currencies();
 
         //prepare data
-        $result[]['categories'] = $get_categories['data'];
-        $result[]['condition'] = $get_conditions['data'];
-        $result[]['currencies'] = $get_currencies['data'];
+        $result['categories'] = $get_categories['data'];
+        $result['condition'] = $get_conditions['data'];
+        $result['currencies'] = $get_currencies['data'];
 
         //response data with msg_success
         $this->response(msg_success($result));
