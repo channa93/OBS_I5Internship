@@ -286,8 +286,8 @@ class Profile extends REST_Controller{
             'subscriberId' => $this->post('subscriberId'),
             'otherUserId' => $this->post('otherUserId')
         );
-        $this->_require_parameter($input);
-        //var_dump($input);die;
+         $this->_require_parameter($input);
+        // var_dump($input);die;
         // check if that profile is exist with accessKey      
         $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
        
@@ -295,7 +295,7 @@ class Profile extends REST_Controller{
             $status = $this->profile->add_subscriber($input);
             if($status === true){
                 $otherUser = $this->profile->get_profile_user_by_id($input['otherUserId']);
-                $this->response(msg_success($otherUser));
+                $this->response($otherUser);
             }else{
                 $this->response(msg_error($status));                
             }
@@ -322,7 +322,7 @@ class Profile extends REST_Controller{
             $status = $this->profile->delete_subscriber($input);
             if($status === true){
                 $otherUser = $this->profile->get_profile_user_by_id($input['otherUserId']);
-                $this->response(msg_success($otherUser));
+                $this->response($otherUser);
             }else{
                 $this->response(msg_error($status));                
             }

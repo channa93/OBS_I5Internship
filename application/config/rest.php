@@ -391,7 +391,7 @@ $config['rest_logs_table'] = 'logs';
 |    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 |
 */
-$config['rest_enable_access'] = FALSE;
+ $config['rest_enable_access'] = FALSE;
 /*
 |--------------------------------------------------------------------------
 | REST API Access Table Name
