@@ -283,22 +283,20 @@ class Profile extends REST_Controller{
         // check require param accessKey
         $input = array(
             'accessKey' => $this->post('accessKey'),
-            'subscriberId' => $this->post('subscriberId'),
             'otherUserId' => $this->post('otherUserId')
         );
          $this->_require_parameter($input);
-        // var_dump($input);die;
+         $this->_check_user_exist_by_id($input['otherUserId']);
+
         // check if that profile is exist with accessKey      
-        $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
-       
-        if($profile){       
-            $status = $this->profile->add_subscriber($input);
-            if($status === true){
-                $otherUser = $this->profile->get_profile_user_by_id($input['otherUserId']);
-                $this->response($otherUser);
-            }else{
-                $this->response(msg_error($status));                
-            }
+        $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);     
+        if($profile){    
+                // check if that userId is already subscribed
+            $this->_check_if_already_subscribed($profile['userId'], $input['otherUserId']);   
+                // add subscriber
+            $input['subscriberId'] = $profile['userId'];
+            $response = $this->profile->add_subscriber($input);
+            $this->response($response);                
         }else{
            $this->response(msg_invalidAccessKey());
         }
@@ -310,26 +308,40 @@ class Profile extends REST_Controller{
         // check require param accessKey
         $input = array(
             'accessKey' => $this->post('accessKey'),
-            'subscriberId' => $this->post('subscriberId'),
             'otherUserId' => $this->post('otherUserId')
         );
         $this->_require_parameter($input);
+        $this->_check_user_exist_by_id($input['otherUserId']);
         
         // check if that profile is exist with accessKey     
         $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
          
         if($profile){
-            $status = $this->profile->delete_subscriber($input);
-            if($status === true){
-                $otherUser = $this->profile->get_profile_user_by_id($input['otherUserId']);
-                $this->response($otherUser);
-            }else{
-                $this->response(msg_error($status));                
-            }
+            $input['subscriberId'] = $profile['userId'];   
+            $response = $this->profile->delete_subscriber($input);
+             $this->response($response);                        
         }else{
            $this->response(msg_invalidAccessKey());
         }
     }
+
+    // check if a user does not exist
+    public function _check_user_exist_by_id($userId){
+        $user = $this->profile->get_profile_user_by_id($userId);
+        if(!$user){
+            $this->response(msg_error('this user ,userId='.$userId.', does not exist'));
+        }
+    }
+    // check if already susbcribed
+    public function _check_if_already_subscribed($subscriberId, $otherUserId)
+    {
+        $otherUser = $this->profile->get_profile_user_by_id($otherUserId);
+        $current_subscribers = $otherUser['data']['subscriber'];
+        if(in_array($subscriberId, $current_subscribers)){// already exist
+            $this->response(msg_error('already subscribed'));
+        }        
+    }
+
 
 
     public function upgrade_account_post()

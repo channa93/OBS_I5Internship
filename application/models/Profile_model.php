@@ -53,7 +53,7 @@ class Profile_model extends CI_Model {
             return $user;        
 
         } catch (Exception $e) {
-            return $e->getMessage();
+            return msg_exception($e->getMessage());
         }
         
     } 
@@ -69,7 +69,7 @@ class Profile_model extends CI_Model {
             $user[0]['totalSubscriber'] = count($user[0]['subscriber']);            
             return msg_success($user[0]);         
         } catch (Exception $e) {
-            return $e->getMessage();
+            return msg_exception($e->getMessage());
         }
         
     }
@@ -195,12 +195,17 @@ class Profile_model extends CI_Model {
         $accessKey = $input['accessKey'];
         $otherUserId = $input['otherUserId'];
        
-        try{
+        try{     
             // push id into subscriber array
             $success = $this->mongo_db->where(array('_id' => new MongoId($otherUserId))) ->
                         push(array('subscriber' => $subscriberId)) ->
                         update(TABLE_PROFILE);
-            return $success;
+            if($success){
+                $otherUser = $this->profile->get_profile_user_by_id($otherUserId);
+                return $otherUser;
+            }else{
+                return msg_error('unable to delete');
+            }
         }catch(Exception $e){
             return msg_exception($e->getMessage());
         }
@@ -213,7 +218,12 @@ class Profile_model extends CI_Model {
             $success = $this->mongo_db->where(array('_id' => new MongoId($otherUserId))) ->
                         pull('subscriber' , $subscriberId) ->
                         update(TABLE_PROFILE);
-            return $success;
+            if($success){
+                $otherUser = $this->profile->get_profile_user_by_id($otherUserId);
+                return $otherUser;
+            }else{
+                return msg_error('unable to delete');
+            }
         }catch(Exception $e){
             return msg_exception($e->getMessage());
         }
