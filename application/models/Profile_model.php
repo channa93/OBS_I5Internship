@@ -92,8 +92,8 @@ class Profile_model extends CI_Model {
 
         try {
              $user_id = $this->mongo_db->insert(TABLE_PROFILE,$format_data);
-             $user = $this->get_profile_user_by_id($user_id->{'$id'});
-             return $user;
+             $data = $this->get_profile_user_by_id($user_id->{'$id'});
+             return $data;
              
         } catch (Exception $e) {
             return msg_exception($e->getMessage());
@@ -253,6 +253,4 @@ class Profile_model extends CI_Model {
         }
     }
 
-
-  
 }
