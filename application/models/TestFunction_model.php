@@ -49,7 +49,7 @@ class TestFunction_model extends CI_Model{
 
     public function get_funcs($ctrlName){
         try {
-            $data = $this->mongo_db->order_by(array('action' => 'ASC'))->select(array('action'))
+            $data = $this->mongo_db->order_by(array('action' => 'ASC'))->select(array('action','params'))
                       ->where(array('controller' => $ctrlName))
                         ->get(TABLE_TEST_FUNCTION);
             return msg_success($data);

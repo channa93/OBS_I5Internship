@@ -239,5 +239,24 @@ class Product extends REST_Controller{
 
     }
 
+    public function get_product_detail_by_id_post()
+    {
+        // check require param accessKey
+        $input = array( 
+            'accessKey' => $this->post('accessKey'),
+            'productId' => $this->post('productId')
+        );
+        $this->_require_parameter($input);
+        
+        // check if that profile is exist with accessKey
+        $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
+        if($profile){
+            $product = $this->product->get_product_by_id($input['productId']);
+            $this->response($product);
+        }else{
+           $this->response(msg_invalidAccessKey());
+        }
+    }
+
 
 }

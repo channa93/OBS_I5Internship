@@ -48,7 +48,8 @@ class TestFunction extends REST_Controller{
 
     public function get_funcs_post()
     {
-        // var_dump($this->post());die;
+         // var_dump($this->post());die;
+        // $this->response(msg_success($this->post()));
         $ctrlName = $this->post('ctrlName');
         $funcs= $this->test_function->get_funcs($ctrlName);
         $this->response($funcs);
@@ -60,6 +61,31 @@ class TestFunction extends REST_Controller{
         $funcName = $this->post('funcName');
         $info= $this->test_function->get_info_of_function($funcName);
         $this->response($info);
+    }
+
+    public function add_function_post()
+    {
+        // check require param accessKey
+        $input = array( 
+            'controller' => $this->post('controller'),
+            'action' => $this->post('action'),
+            'method' => $this->post('method'),
+        );
+
+        $this->_require_parameter($input);
+        $input['description'] = $this->post('description');
+        $input['params'][] =  array(
+            
+        );
+        
+        // check if that profile is exist with accessKey
+        $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
+        if($profile){
+            
+        }else{
+           $this->response(msg_invalidAccessKey());
+        }
+
     }
 
 

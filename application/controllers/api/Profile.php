@@ -83,6 +83,7 @@ class Profile extends REST_Controller{
         /*****Edit profile*/
 
     public function edit_profile_post(){
+        // var_dump($this->post(),$_FILES);die;
         // check require param accessKey
         $input = array(
             'accessKey' => $this->post('accessKey'),
