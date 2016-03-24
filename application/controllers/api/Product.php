@@ -252,6 +252,8 @@ class Product extends REST_Controller{
         $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
         if($profile){
             $product = $this->product->get_product_by_id($input['productId']);
+            $ownerInfo =  $this->profile->get_profile_user_by_id($product['data']['ownerId']);
+            $product['data']['ownerInfo'] = $ownerInfo['data'];
             $this->response($product);
         }else{
            $this->response(msg_invalidAccessKey());
