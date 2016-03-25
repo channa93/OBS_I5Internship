@@ -137,6 +137,14 @@ define('SUSPEND', -1);
 define('FACEBOOK', 1);
 define('GOOGLE+', 2);
 
+// Product status
+define('REVIEW', 1);
+define('ACCEPTED', 2);
+define('REJECTED', 3);
+define('AVAILABLE', 4);
+define('SOLD', 5);
+
+
 //CHARACTER LENGTH
 define('TITLE_LENGTH_LIMITED', 750);
 define('DESC_LENGTH_LIMITED', 200);

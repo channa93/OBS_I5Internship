@@ -231,6 +231,36 @@ class Product extends REST_Controller{
         }
     }
 
+    // get all products of other user by his id , product status is available only
+    public function get_other_user_products_by_user_id_post()
+    {
+        // check require param accessKey
+        $input = array(
+            'accessKey' => $this->post('accessKey'),
+            'otherUserId' => $this->post('otherUserId')
+        );
+        $this->_require_parameter($input);
+
+        // check if that profile is exist with accessKey
+        $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
+        if($profile){
+            
+            $products = $this->product->get_other_user_products_by_user_id($input['otherUserId']);
+            if(!empty($products)){
+                $otherUser = $this->profile->get_profile_user_by_id($input['otherUserId']);
+                $data['userInfo'] = $otherUser['data'];
+                $data['products'] = $products;
+                $this->response(msg_success($data));
+            }
+
+            $this->response(msg_error('no product'));
+        }else{
+           $this->response(msg_invalidAccessKey());
+        }
+    }
+
+
+
 
     /**
     * get all product categories, condition, and currencies
@@ -280,6 +310,27 @@ class Product extends REST_Controller{
             $ownerInfo =  $this->profile->get_profile_user_by_id($product['data']['ownerId']);
             $product['data']['ownerInfo'] = $ownerInfo['data'];
             $this->response($product);
+        }else{
+           $this->response(msg_invalidAccessKey());
+        }
+    }
+
+
+    // increment number of viewCount in product info
+    public function count_view_product_post()
+    {
+        // check require param accessKey
+        $input = array( 
+            'accessKey' => $this->post('accessKey'),
+            'productId' => $this->post('productId')
+        );
+        $this->_require_parameter($input);
+        
+        // check if that profile is exist with accessKey
+        $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
+        if($profile){
+            $response = $this->product->count_view_product($input['productId']);
+            $this->response($response);
         }else{
            $this->response(msg_invalidAccessKey());
         }

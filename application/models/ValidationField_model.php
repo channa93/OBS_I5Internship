@@ -198,7 +198,7 @@ class ValidationField_model extends CI_Model {
             'currencyType' => 1,  //1:KH
             'productCode' => '',
             'status' => array(
-                'status' => 1,  //1:review, 2:accepted, 3:rejected, 4:available, 5:sold
+                'status' => REVIEW,  //1:review, 2:accepted, 3:rejected, 4:available, 5:sold
                 'date' => date('Y-m-d H:m:s A')
             ),
             'type' => new MongoInt32(1),  // 1:simple, 2:event

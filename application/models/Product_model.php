@@ -125,6 +125,7 @@ class Product_model extends CI_Model{
       }
    }
 
+   // get all my products with any products status
    public function get_all_my_products($userId){
       $ownerId = $userId;
       try {
@@ -142,9 +143,44 @@ class Product_model extends CI_Model{
       }
    }
 
+   // get other user products by his id with available status product only
+   public function get_other_user_products_by_user_id($otherUserId){
+      $ownerId = $otherUserId;
+      try {
+          $products =  $this->mongo_db 
+                        ->where(array('ownerId' => $ownerId , 'isDelete'=>false ,
+                          'status.status' => AVAILABLE))
+                        ->get(TABLE_PRODUCT);
+          foreach ($products as $key => $value) {
+              $products[$key]['productId'] = $value['_id']->{'$id'};
+              $products[$key]['totalLikes'] =  count($value['likerId']);
+              unset($products[$key]['_id']); 
+          }
+          return $products;
+      } catch (Exception $e) {
+          return msg_exception($e->getMessage()); 
+      }
+   }
 
 
 
+   public function count_view_product($productId)
+   {
+      try {
+          // find current number of view
+          $product = $this->get_product_by_id($productId);
+          $curentNumView = $product['data']['viewCount'];
+          
+          // increment viewCount on product
+          $updateData = array(
+            'viewCount' => $curentNumView+1
+          );  
+          $product = $this->edit_product($updateData, $productId);
+          return $product;
+      } catch (Exception $e) {
+          return msg_exception($e->getMessage()); 
+      }
+   }
 
    
    
