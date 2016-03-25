@@ -111,7 +111,7 @@ class Product_model extends CI_Model{
    public function get_user_products($userId){
       $ownerId = $userId;
       try {
-          $products =  $this->mongo_db->select(array('_id','name','imageGallery','likerId'))
+          $products =  $this->mongo_db //->select(array('_id','name','imageGallery','likerId'))
                         ->where(array('ownerId' => $ownerId , 'isDelete'=>false))
                         ->get(TABLE_PRODUCT);
           foreach ($products as $key => $value) {
@@ -124,6 +124,26 @@ class Product_model extends CI_Model{
           return msg_exception($e->getMessage()); 
       }
    }
+
+   public function get_all_my_products($userId){
+      $ownerId = $userId;
+      try {
+          $products =  $this->mongo_db 
+                        ->where(array('ownerId' => $ownerId , 'isDelete'=>false))
+                        ->get(TABLE_PRODUCT);
+          foreach ($products as $key => $value) {
+              $products[$key]['productId'] = $value['_id']->{'$id'};
+              $products[$key]['totalLikes'] =  count($value['likerId']);
+              unset($products[$key]['_id']); 
+          }
+          return $products;
+      } catch (Exception $e) {
+          return msg_exception($e->getMessage()); 
+      }
+   }
+
+
+
 
 
    

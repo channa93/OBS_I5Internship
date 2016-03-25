@@ -69,4 +69,15 @@ class TestFunction_model extends CI_Model{
         }
     }
 
+    public function add_function($data)
+    {
+        try {
+            $data = $this->mongo_db->insert(TABLE_TEST_FUNCTION,$data);
+            return msg_success($data);
+        } catch (Exception $e) {
+            return msg_exception($e->getMessage());
+        }
+
+    }
+
 }

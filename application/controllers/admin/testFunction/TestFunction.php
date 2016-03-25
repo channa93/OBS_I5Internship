@@ -65,27 +65,19 @@ class TestFunction extends REST_Controller{
 
     public function add_function_post()
     {
+
+        //$this->response(msg_success($this->post()));
         // check require param accessKey
         $input = array( 
             'controller' => $this->post('controller'),
             'action' => $this->post('action'),
-            'method' => $this->post('method'),
+            'method' => 'POST',
+            'description' => $this->post('description'),
+            'params' => $this->post('params')
         );
 
-        $this->_require_parameter($input);
-        $input['description'] = $this->post('description');
-        $input['params'][] =  array(
-            
-        );
-        
-        // check if that profile is exist with accessKey
-        $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
-        if($profile){
-            
-        }else{
-           $this->response(msg_invalidAccessKey());
-        }
-
+        $response = $this->test_function->add_function($input);
+        $this->response($response);
     }
 
 

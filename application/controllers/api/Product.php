@@ -183,22 +183,47 @@ class Product extends REST_Controller{
         $this->response(msg_error('Product does not exist or it is not a product of this user'));
     }
 
-    public function get_products_by_user_id_post()
+    // public function get_products_by_user_id_post()
+    // {
+    //     // check require param accessKey
+    //     $input = array(
+    //         'accessKey' => $this->post('accessKey'),
+    //         'userId' => $this->post('userId'),
+    //     );
+    //     $this->_require_parameter($input);
+
+    //     // check if that profile is exist with accessKey
+    //     $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
+    //     if($profile){
+    //         $userId = $input['userId'];
+    //         $products = $this->product->get_user_products($userId);
+    //         if(!empty($products)){
+    //             $this->response(msg_success($products));
+    //         }
+    //         $this->response(msg_error('no product'));
+    //     }else{
+    //        $this->response(msg_invalidAccessKey());
+    //     }
+    // }
+
+    // get all my products with full information, all status of product will be query
+    public function get_all_my_products_post()
     {
         // check require param accessKey
         $input = array(
             'accessKey' => $this->post('accessKey'),
-            'userId' => $this->post('userId'),
         );
         $this->_require_parameter($input);
 
         // check if that profile is exist with accessKey
         $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
         if($profile){
-            $userId = $input['userId'];
-            $products = $this->product->get_user_products($userId);
+            $userId = $profile['userId'];
+            $products = $this->product->get_all_my_products($userId);
             if(!empty($products)){
-                $this->response(msg_success($products));
+                 $data['products'] = $products;
+                 $data['userInfo'] = $profile;
+                $this->response(msg_success($data));
             }
             $this->response(msg_error('no product'));
         }else{
