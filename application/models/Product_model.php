@@ -182,6 +182,90 @@ class Product_model extends CI_Model{
       }
    }
 
+   // get most popular product based on viewCount
+   public function get_popular_products()
+   {
+        try {
+            $products = $this->mongo_db
+                            ->where(array('status.status' => AVAILABLE, 'isDelete' => false))
+                            ->order_by(array('viewCount' => 'DESC'))
+                            ->limit(LIMIT_MAX_POPULAR_PRODUCT)
+                            ->get(TABLE_PRODUCT);
+            // filter productId and count total likes
+            foreach ($products as $key => $value) {
+                $products[$key]['productId'] =  $products[$key]['_id']->{'$id'};
+                $products[$key]['totalLikes'] =  count($products[$key]['likerId']);
+                unset($products[$key]['_id']);
+            }
+
+            return msg_success($products);
+        } catch (Exception $e) {
+            return msg_exception($e->getMessage()); 
+
+        }
+   } 
+
+   // get all new available products in this month
+   public function get_new_products_this_month()
+   {
+        $firstDay = date('Y-m-01');
+        $lastDay = date('Y-m-t');
+        try {
+            $products = $this->mongo_db
+                            ->where(array('status.status' => AVAILABLE, 'isDelete' => false))
+                            ->order_by(array('createdDate' => 'DESC'))
+                            ->where_between('createdDate', $firstDay, $lastDay)
+                            ->limit(LIMIT_MAX_POPULAR_PRODUCT)
+                            ->get(TABLE_PRODUCT);
+            
+            // filter productId and count total likes
+            foreach ($products as $key => $value) {
+                $products[$key]['productId'] =  $products[$key]['_id']->{'$id'};
+                $products[$key]['totalLikes'] =  count($products[$key]['likerId']);
+                unset($products[$key]['_id']);
+            }
+            
+            return msg_success($products);
+        } catch (Exception $e) {
+            return msg_exception($e->getMessage()); 
+        }
+   }
+
+
+   // get all all recommenned product => new this month and most popular 
+   public function get_recommened_product()
+   {
+        $firstDay = date('Y-m-01');
+        $lastDay = date('Y-m-t');
+        try {
+            $products = $this->mongo_db
+                            ->where(array('status.status' => AVAILABLE, 'isDelete' => false))
+                            ->order_by(array('createdDate' => 'DESC', 'viewCount'  => 'DESC'))
+                            ->where_between('createdDate', $firstDay, $lastDay)
+                            ->limit(LIMIT_MAX_POPULAR_PRODUCT)
+                            ->get(TABLE_PRODUCT);
+            
+            // filter productId and count total likes
+            foreach ($products as $key => $value) {
+                $products[$key]['productId'] =  $products[$key]['_id']->{'$id'};
+                $products[$key]['totalLikes'] =  count($products[$key]['likerId']);
+                unset($products[$key]['_id']);
+            }
+            
+            return msg_success($products);
+        } catch (Exception $e) {
+            return msg_exception($e->getMessage()); 
+        }
+   }
+
+
+
+
+
+
+
+   
+
    
    
 }

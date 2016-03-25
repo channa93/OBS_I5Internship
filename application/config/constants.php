@@ -158,3 +158,7 @@ define('DEPOSIT', 1);
 define('WITHDRAW', 2);
 
 
+// Number of max popular product
+define('LIMIT_MAX_POPULAR_PRODUCT', 10);
+
+

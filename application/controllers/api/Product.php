@@ -336,5 +336,33 @@ class Product extends REST_Controller{
         }
     }
 
+    // TODO: get user info to each type of products, 
+    
+    // get system products available: popular,new this month, recommend and normal product
+    public function get_system_products_available_post()
+    {
+
+        $products = $this->product->get_recommened_product();
+        var_dump($products);die;
+        // check require param accessKey
+        $input = array( 
+            'accessKey' => $this->post('accessKey'),
+        );
+        $this->_require_parameter($input);
+        
+        // check if that profile is exist with accessKey
+        $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
+        if($profile){
+            $popular = $this->product->get_popular_products();
+            $newThisMonth = $this->product->get_new_products_this_month();
+            $normal = $this->product->get_available_products();
+
+
+        }else{
+           $this->response(msg_invalidAccessKey());
+        }
+
+    }
+
 
 }
