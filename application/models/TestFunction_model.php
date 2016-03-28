@@ -49,9 +49,15 @@ class TestFunction_model extends CI_Model{
 
     public function get_funcs($ctrlName){
         try {
-            $data = $this->mongo_db->order_by(array('action' => 'ASC'))->select(array('action','params'))
+            $data = $this->mongo_db->order_by(array('action' => 'ASC'))
                       ->where(array('controller' => $ctrlName))
                         ->get(TABLE_TEST_FUNCTION);
+            
+                // filter id
+            foreach ($data as $key => $value) {
+                $data[$key]['id'] =  $data[$key]['_id']->{'$id'};                
+                unset($data[$key]['_id']);
+            }
             return msg_success($data);
         } catch (Exception $e) {
             return msg_exception($e->getMessage());
@@ -78,6 +84,22 @@ class TestFunction_model extends CI_Model{
             return msg_exception($e->getMessage());
         }
 
+    } 
+
+
+    public function delete_function($id)
+    {
+        try {
+            $data = $this->mongo_db
+                        ->where(array('_id' => new MongoId($id)))
+                        ->delete(TABLE_TEST_FUNCTION);
+            return msg_success($data);
+        } catch (Exception $e) {
+            return msg_exception($e->getMessage());
+        }
+
     }
+
+
 
 }

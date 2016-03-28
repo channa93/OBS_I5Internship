@@ -81,5 +81,18 @@ class TestFunction extends REST_Controller{
     }
 
 
+    public function delete_function_post()
+    {
+
+        $input = array( 
+            'id' => $this->post('id')
+        );
+        $this->_require_parameter($input);
+
+        $response = $this->test_function->delete_function($input['id']);
+        $this->response($response);
+    }
+
+
 
 }
