@@ -13,6 +13,7 @@ class Product_model extends CI_Model{
     function __construct() {
         parent::__construct();
         $this->load->model('ValidationField_model','validateField');
+        $this->load->model('Profile_model','profile');
     }
 
     public function get_all_products(){
@@ -58,13 +59,14 @@ class Product_model extends CI_Model{
       try {
           $products = $this->mongo_db->where(array(
                               'isDelete'=>false,
-                              'status.status'=> new MongoInt32(1))
+                              'status.status'=> AVAILABLE)
                             )  
                             ->get(TABLE_PRODUCT);
           foreach ($products as $key => $value) {
               $products[$key]['productId'] =  $products[$key]['_id']->{'$id'};
               $products[$key]['totalLikes'] =  count($products[$key]['likerId']);
-
+              $ownerInfo =  $this->profile->get_profile_user_by_id($products[$key]['ownerId']);
+              $products[$key]['ownerInfo'] = $ownerInfo['data'];
               unset($products[$key]['_id']);
           }
           return msg_success($products);
@@ -195,6 +197,8 @@ class Product_model extends CI_Model{
             foreach ($products as $key => $value) {
                 $products[$key]['productId'] =  $products[$key]['_id']->{'$id'};
                 $products[$key]['totalLikes'] =  count($products[$key]['likerId']);
+                $ownerInfo =  $this->profile->get_profile_user_by_id($products[$key]['ownerId']);
+                $products[$key]['ownerInfo'] = $ownerInfo['data'];
                 unset($products[$key]['_id']);
             }
 
@@ -221,7 +225,10 @@ class Product_model extends CI_Model{
             // filter productId and count total likes
             foreach ($products as $key => $value) {
                 $products[$key]['productId'] =  $products[$key]['_id']->{'$id'};
-                $products[$key]['totalLikes'] =  count($products[$key]['likerId']);
+                $products[$key]['totalLikes'] =  count($products[$key]['likerId']);          
+                $ownerInfo =  $this->profile->get_profile_user_by_id($products[$key]['ownerId']);
+                $products[$key]['ownerInfo'] = $ownerInfo['data'];
+
                 unset($products[$key]['_id']);
             }
             
@@ -233,7 +240,7 @@ class Product_model extends CI_Model{
 
 
    // get all all recommenned product => new this month and most popular 
-   public function get_recommened_product()
+   public function get_recommened_products()
    {
         $firstDay = date('Y-m-01');
         $lastDay = date('Y-m-t');
@@ -248,7 +255,10 @@ class Product_model extends CI_Model{
             // filter productId and count total likes
             foreach ($products as $key => $value) {
                 $products[$key]['productId'] =  $products[$key]['_id']->{'$id'};
-                $products[$key]['totalLikes'] =  count($products[$key]['likerId']);
+                $products[$key]['totalLikes'] =  count($products[$key]['likerId']);            
+                $ownerInfo =  $this->profile->get_profile_user_by_id($products[$key]['ownerId']);
+                $products[$key]['ownerInfo'] = $ownerInfo['data'];
+                
                 unset($products[$key]['_id']);
             }
             

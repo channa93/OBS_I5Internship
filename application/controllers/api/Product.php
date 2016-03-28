@@ -341,9 +341,6 @@ class Product extends REST_Controller{
     // get system products available: popular,new this month, recommend and normal product
     public function get_system_products_available_post()
     {
-
-        $products = $this->product->get_recommened_product();
-        var_dump($products);die;
         // check require param accessKey
         $input = array( 
             'accessKey' => $this->post('accessKey'),
@@ -355,9 +352,16 @@ class Product extends REST_Controller{
         if($profile){
             $popular = $this->product->get_popular_products();
             $newThisMonth = $this->product->get_new_products_this_month();
+            $recommend = $this->product->get_recommened_products();
             $normal = $this->product->get_available_products();
 
-
+            $products = array(
+                'popular' => $popular['data'][0],
+                'newThisMonth' => $newThisMonth['data'][0],
+                'recommend' => $recommend['data'],
+                'normal' => $normal['data']
+            );
+            $this->response(msg_success($products));
         }else{
            $this->response(msg_invalidAccessKey());
         }
