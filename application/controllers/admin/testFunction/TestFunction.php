@@ -93,6 +93,26 @@ class TestFunction extends REST_Controller{
         $this->response($response);
     }
 
+    public function edit_function_post()
+    {
+
+        $input = array( 
+            'id' => $this->post('id')
+        );
+        $this->_require_parameter($input);
+
+        $updateData = array(  
+            'controller' => $this->post('controller'),
+            'action' => $this->post('action'),
+            'method' => 'POST',
+            'description' => $this->post('description'),
+            'params' => $this->post('params')
+        );
+
+        $response = $this->test_function->edit_function($input['id'], $updateData);
+        $this->response($response);     
+    }
+
 
 
 }

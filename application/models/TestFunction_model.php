@@ -78,8 +78,10 @@ class TestFunction_model extends CI_Model{
     public function add_function($data)
     {
         try {
-            $data = $this->mongo_db->insert(TABLE_TEST_FUNCTION,$data);
-            return msg_success($data);
+            $id = $this->mongo_db->insert(TABLE_TEST_FUNCTION,$data);
+            $response = $this->get_funcs($data['controller']);
+            return msg_success($response['data']);
+
         } catch (Exception $e) {
             return msg_exception($e->getMessage());
         }
@@ -94,6 +96,21 @@ class TestFunction_model extends CI_Model{
                         ->where(array('_id' => new MongoId($id)))
                         ->delete(TABLE_TEST_FUNCTION);
             return msg_success($data);
+        } catch (Exception $e) {
+            return msg_exception($e->getMessage());
+        }
+
+    } 
+
+    public function edit_function($id, $updateData)
+    {
+        try {
+            $status = $this->mongo_db
+                        ->where(array('_id' => new MongoId($id)))
+                        ->set($updateData)
+                        ->update(TABLE_TEST_FUNCTION);
+            $response = $this->get_funcs($updateData['controller']);
+            return msg_success($response['data']);
         } catch (Exception $e) {
             return msg_exception($e->getMessage());
         }
