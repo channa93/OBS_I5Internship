@@ -265,6 +265,11 @@ class Profile_model extends CI_Model {
             $statusProduct = $this->mongo_db
                                 ->where(array('ownerId'=>$userId))
                                 ->delete_all(TABLE_PRODUCT);
+
+            // delete user's bidrooms
+            $statusBidroom = $this->mongo_db
+                                ->where(array('ownerId'=>$userId))
+                                ->delete_all(TABLE_BIDROOM);
             
             return msg_success([]);
         }catch (Exception $e){

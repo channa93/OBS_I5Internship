@@ -77,6 +77,7 @@ class BidRoom extends REST_Controller{
            $this->response(msg_invalidAccessKey());
         }
     }
+
     public function get_bidroom_by_id_post()
     {
         // check require param accessKey
@@ -147,6 +148,25 @@ class BidRoom extends REST_Controller{
             }else{
                 $this->response(msg_error('this bidroom not belong to you'));
             }
+        }else{
+           $this->response(msg_invalidAccessKey());
+        }
+    }
+
+    public function get_bidroom_by_product_id_post()
+    {
+        // check require param accessKey
+        $input = array( 
+            'accessKey' => $this->post('accessKey'),
+            'productId' => $this->post('productId')
+        );
+        $this->_require_parameter($input);
+        
+        // check if that profile is exist with accessKey
+        $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
+        if($profile){
+            $bidroom = $this->bidroom->get_bidroom_by_product_id($input['productId']);
+            $this->response($bidroom);
         }else{
            $this->response(msg_invalidAccessKey());
         }

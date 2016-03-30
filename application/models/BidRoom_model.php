@@ -54,7 +54,6 @@ class BidRoom_model extends CI_Model{
             return msg_exception($e->getMessage());
         }
     }
-
     public function get_bidroom_by_id($bidroomId)
     {
         try {
@@ -113,7 +112,22 @@ class BidRoom_model extends CI_Model{
         } catch (Exception $e) {
             return msg_exception($e->getMessage()); 
         }
+    }
 
+
+    public function get_bidroom_by_product_id($productId)
+    {
+        try {
+            $bidroom = $this->mongo_db->where(array('productId' => $productId))
+                                ->get(TABLE_BIDROOM);
+            if(empty($bidroom)) return msg_error('no bidroom yet for this productId='+$productId);
+            $bidroom[0]['bidroomId'] =  $bidroom[0]['_id']->{'$id'};
+            unset($bidroom[0]['_id']);
+            return msg_success($bidroom[0]);
+        } catch (Exception $e) {
+            return msg_exception($e->getMessage());
+        }
+        
     }
 
 }
