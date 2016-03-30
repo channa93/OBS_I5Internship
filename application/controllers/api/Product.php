@@ -44,7 +44,7 @@ class Product extends REST_Controller{
             //'price' => (double)$this->post('price'),
             'price' => (double) number_format(doubleval($this->post('price')), 2, '.', ''), //float with 2 decimal places: .00
             'currencyType' => (int)$this->post('currencyType'),
-            'categoryId' => (int)$this->post('currencyType'),
+            'categoryId' => (int)$this->post('categoryId'),
             'condition' => (int)$this->post('condition'),
             'accessKey' => $this->post('accessKey')
 

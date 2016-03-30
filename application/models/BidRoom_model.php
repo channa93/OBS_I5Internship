@@ -40,6 +40,10 @@ class BidRoom_model extends CI_Model{
                           ->get(TABLE_BIDROOM);
             $output[0]['bidroomId'] =  $output[0]['_id']->{'$id'};
             unset($output[0]['_id']);
+            // UPDATE product status
+            $productId = $this->mongo_db->where(array('_id' => new MongoId($data['productId'])))
+                            ->set(array('status.status' => AVAILABLE))
+                            ->update(TABLE_PRODUCT);
                 // for future get all data if client needs
             // $userInfo = $this->profile->get_profile_user_by_id($data['ownerId']);
             // $productInfo = $this->product->get_product_by_id($data['productId']);

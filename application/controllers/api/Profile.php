@@ -390,8 +390,27 @@ class Profile extends REST_Controller{
         }else{
            $this->response(msg_invalidAccessKey());
         }
-
     }
+
+    public function remove_user_by_accesskey_post()
+    {
+        // check require param accessKey
+        $input = array( 
+            'accessKey' => $this->post('accessKey'),
+        );
+        $this->_require_parameter($input);
+        
+        // check if that profile is exist with accessKey
+        $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
+        if($profile){
+            $response = $this->profile->remove_user_by_accesskey($input['accessKey'], $profile['userId']);
+            $this->response($response);
+        }else{
+           $this->response(msg_invalidAccessKey());
+        }
+    }
+
+
 
 
 
