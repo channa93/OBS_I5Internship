@@ -189,7 +189,8 @@ class Product_model extends CI_Model{
    {
         try {
             $products = $this->mongo_db
-                            ->where(array('status.status' => AVAILABLE, 'isDelete' => false))
+                            ->where(array('isDelete' => false))
+                            ->where_in('status.status', array(ACCEPTED, AVAILABLE))
                             ->order_by(array('viewCount' => 'DESC'))
                             ->limit(LIMIT_MAX_POPULAR_PRODUCT)
                             ->get(TABLE_PRODUCT);
@@ -216,7 +217,8 @@ class Product_model extends CI_Model{
         $lastDay = date('Y-m-t');
         try {
             $products = $this->mongo_db
-                            ->where(array('status.status' => AVAILABLE, 'isDelete' => false))
+                            ->where(array('isDelete' => false))
+                            ->where_in('status.status', array(ACCEPTED, AVAILABLE))
                             ->order_by(array('createdDate' => 'DESC'))
                             ->where_between('createdDate', $firstDay, $lastDay)
                             ->limit(LIMIT_MAX_POPULAR_PRODUCT)
@@ -246,7 +248,8 @@ class Product_model extends CI_Model{
         $lastDay = date('Y-m-t');
         try {
             $products = $this->mongo_db
-                            ->where(array('status.status' => AVAILABLE, 'isDelete' => false))
+                            ->where(array('isDelete' => false))
+                            ->where_in('status.status', array(ACCEPTED, AVAILABLE))
                             ->order_by(array('createdDate' => 'DESC', 'viewCount'  => 'DESC'))
                             ->where_between('createdDate', $firstDay, $lastDay)
                             ->limit(LIMIT_MAX_POPULAR_PRODUCT)

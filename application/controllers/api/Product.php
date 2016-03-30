@@ -336,7 +336,7 @@ class Product extends REST_Controller{
         }
     }
 
-    // TODO: get user info to each type of products, 
+    
     
     // get system products available: popular,new this month, recommend and normal product
     public function get_system_products_available_post()
@@ -367,6 +367,65 @@ class Product extends REST_Controller{
         }
 
     }
+
+    // get popular product
+    public function get_popular_products_post()
+    {
+        // check require param accessKey
+        $input = array( 
+            'accessKey' => $this->post('accessKey'),
+        );
+        $this->_require_parameter($input);
+        
+        // check if that profile is exist with accessKey
+        $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
+        if($profile){
+            $popular = $this->product->get_popular_products();
+            $this->response($popular);
+        }else{
+           $this->response(msg_invalidAccessKey());
+        }
+    }
+
+    // get new this month product
+    public function get_new_products_this_month_post()
+    {
+        // check require param accessKey
+        $input = array( 
+            'accessKey' => $this->post('accessKey'),
+        );
+        $this->_require_parameter($input);
+        
+        // check if that profile is exist with accessKey
+        $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
+        if($profile){
+            $newThisMonth = $this->product->get_new_products_this_month();
+            $this->response($newThisMonth);
+        }else{
+           $this->response(msg_invalidAccessKey());
+        }
+    }
+
+    // get recommend products
+    public function get_recommened_products_post()
+    {
+        // check require param accessKey
+        $input = array( 
+            'accessKey' => $this->post('accessKey'),
+        );
+        $this->_require_parameter($input);
+        
+        // check if that profile is exist with accessKey
+        $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
+        if($profile){
+            $recommend = $this->product->get_recommened_products();
+            $this->response($recommend);
+        }else{
+           $this->response(msg_invalidAccessKey());
+        }
+    }
+
+
 
 
 }
