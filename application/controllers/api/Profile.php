@@ -396,7 +396,7 @@ class Profile extends REST_Controller{
     {
         // check require param accessKey
         $input = array( 
-            'accessKey' => $this->post('accessKey'),
+            'accessKey' => $this->post('accessKey')
         );
         $this->_require_parameter($input);
         

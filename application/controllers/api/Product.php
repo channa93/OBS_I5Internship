@@ -120,8 +120,10 @@ class Product extends REST_Controller{
         );
         $this->_require_parameter($input);
         $input['description'] = $this->post('description');
+        $input['categoryId'] = $this->post('categoryId');
         $input['name'] = $this->post('name');
         $input['productCode'] = $this->post('productCode');
+        $input['currencyType'] = $this->post('currencyType');
         $input['price'] = (double) number_format(doubleval($this->post('price')), 2, '.', '');
 
         // check if that profile is exist with accessKey

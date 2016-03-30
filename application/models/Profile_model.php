@@ -256,19 +256,15 @@ class Profile_model extends CI_Model {
     public function remove_user_by_accesskey($accessKey, $userId)
     {
         try{
-            // deactivate profile
-            $statusProfile = $this->mongo_db->where(array('accessKey'=>$accessKey))
-                         ->set(array(
-                                'status' => DEACTIVE
-                                ))
-                         ->update(TABLE_PROFILE);
+            // delete profile
+            $statusProfile = $this->mongo_db
+                                ->where(array('accessKey'=>$accessKey))
+                                ->delete(TABLE_PROFILE);
 
             // delete user's products
-            $statusProduct = $this->mongo_db->where(array('ownerId'=>$userId))
-                         ->set(array(
-                                'isDelete' => true
-                                ))
-                         ->update(TABLE_PRODUCT);
+            $statusProduct = $this->mongo_db
+                                ->where(array('ownerId'=>$userId))
+                                ->delete_all(TABLE_PRODUCT);
             
             return msg_success([]);
         }catch (Exception $e){
