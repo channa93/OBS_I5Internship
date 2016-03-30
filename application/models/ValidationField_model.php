@@ -247,6 +247,45 @@ class ValidationField_model extends CI_Model {
 
         $output = $this->_prepare_input($template_fields, $data);
         return $output;
+    } 
+
+    /* template for collection Report
+     * @param [array] $data
+     * @return [array] array of data template
+     */
+    public function report($data){
+        if(isset($data['productId'])){ // report product
+            $template_fields = array(
+                'productId' => '',
+                'reportById' => '',
+                'description' => '',
+                'created' => date('Y-m-d H:m:s A'),
+                'type' => 1,  // 1: report product, 2: report user
+                'statusInfo' => array(
+                    'status' => REVIEW,
+                    'date'   => date('Y-m-d H:m:s A')
+                )    
+            );
+        }else{  // report user
+            $template_fields = array(
+                'userId' => '',
+                'reportById' => '',
+                'description' => '',
+                'created' => date('Y-m-d H:m:s A'),
+                'type' => 1,  // 1: report product, 2: report user
+                'statusInfo' => array(
+                    'status' => REVIEW,   // //1:review, 2:accepted, 3:rejected 
+                    'date'   => date('Y-m-d H:m:s A')
+                )    
+            );
+        }
+        
+        if(!$data){
+            return $template_fields;
+        }
+
+        $output = $this->_prepare_input($template_fields, $data);
+        return $output;
     }   
 
 }

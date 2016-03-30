@@ -115,6 +115,7 @@ define('TABLE_ACCOUNT', 'AccountType');
 define('TABLE_TRANSACTION_HISTORY', 'TransactionHistory');
 define('TABLE_BIDROOM', 'BidRoom');
 define('TABLE_TEST_FUNCTION', 'TestFunction');
+define('TABLE_REPORT', 'Report');
 
 
 // Encryption key when generate access key
