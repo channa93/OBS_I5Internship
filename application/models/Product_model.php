@@ -57,11 +57,10 @@ class Product_model extends CI_Model{
    
    public function get_available_products(){
       try {
-          $products = $this->mongo_db->where(array(
-                              'isDelete'=>false,
-                              'status.status'=> AVAILABLE)
-                            )  
-                            ->get(TABLE_PRODUCT);
+          $products = $this->mongo_db
+                          ->where(array('isDelete' => false))
+                          ->where_in('status.status', array(ACCEPTED, AVAILABLE))
+                          ->get(TABLE_PRODUCT);
           foreach ($products as $key => $value) {
               $products[$key]['productId'] =  $products[$key]['_id']->{'$id'};
               $products[$key]['totalLikes'] =  count($products[$key]['likerId']);
