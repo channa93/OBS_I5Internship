@@ -33,31 +33,66 @@ class Search extends REST_Controller{
             return $is_exist_profile;
         }
     }
-//
-//    private function _check_title_exist(){
-//        $all_currencies = $this->mongo_db->get(TABLE_CURRENCY);
-//        foreach($all_currencies as $obj){
-//            if($obj['title'] === $this->post('title')){
-//                $this->response(msg_error('This title already exist', $this->post('title')));
-//            }
-//        }
-//    }
-//
-//    private function _check_id_exist(){
-//        $all_currencies = $this->mongo_db->get(TABLE_CURRENCY);
-//        foreach($all_currencies as $obj){
-//            if($obj['_id'] === (int)($this->post('currencyId'))){
-//                return (int)($this->post('currencyId'));
-//            }
-//        }
-//    }
+
+    private function _search_user($keyword, $limit, $offset){
+        $result = $this->mongo_db->where(array(
+            'status' => 1,
+            '$or' => array(
+                        array(
+                            'displayName' => array(
+                                '$regex' => $keyword,
+                                '$options' => '$im'
+                            )
+                        ),
+                        array(
+                            'firstName' => array(
+                                '$regex' => $keyword,
+                                '$options' => '$im'
+                            )
+                        ),
+                        array(
+                            'lastName' => array(
+                                '$regex' => $keyword,
+                                '$options' => '$im'
+                            )
+                        ),
+                        array(
+                            'phones.number' => array(
+                                '$regex' => $keyword,
+                                '$options' => '$im'
+                            )
+                        )
+            )
+        ))->limit($limit)->offset($offset)->get(TABLE_PROFILE);
+
+        return $result;
+    }
+
+    private function _search_product ($keyword, $limit, $offset){
+        $result = $this->mongo_db->where_in(
+            'status.status', array(ACCEPTED, AVAILABLE)
+        )->where(
+            array(
+                'name' => array(
+                    '$regex' => $keyword,
+                    '$options' => '$im'
+                )
+            )
+        )->limit($limit)->offset($offset)->get(TABLE_PRODUCT);
+
+        return $result;
+    }
+
+    //TODO: implement after create bidroom is implemented
+    private function _search_bidroom ($keyword, $limit, $offset){
+
+    }
     
-    public function search_user_post(){
+    public function index_post(){
 
         $params = array(
-            'filter' => $this->post('filter'),
-            'limit' => $this->post('limit'),
-            'offset' => $this->post('offset')
+            'keyword' => $this->post('keyword'),
+            'searchType' => $this->post('searchType')
         );
 
         //check profile exist
@@ -65,33 +100,22 @@ class Search extends REST_Controller{
 
         //check require params
         $this->_require_parameter($params);
-        
-        //do the search
-        $result = $this->mongo_db->where(array(
-            'status' => 1,
-            '$or' => array(
-                        array(
-                            'userName' => array(
-                                '$regex' => $this->post('filter'),
-                                '$options' => '$im'
-                            )
-                        ),
-                        array(
-                            'firstName' => array(
-                                '$regex' => $this->post('filter'),
-                                '$options' => '$im'
-                            )
-                        ),
-                        array(
-                            'phones' => array(
-                                '$in' => array(
-                                    (int)($this->post('filter'))
-                                    )
-                                )
-                            )
-                        )
 
-        ))->limit($this->post('limit'))->offset($this->post('offset'))->get(TABLE_PROFILE);
+        $keyword = $this->post('keyword');
+        $searchType = (int)($this->post('searchType'));
+        $filter = $this->post('filter');
+        $limit = $this->post('limit');
+        $offset = $this->post('offset');
+
+        if($filter == null){
+            if($searchType == 0){
+                $result = $this->_search_user($keyword, $limit, $offset);
+            } else if($searchType == 1){
+                $result = $this->_search_product($keyword, $limit, $offset);
+            } else if($searchType == 2){
+                $result = $this->_search_bidroom($keyword, $limit, $offset);
+            }
+        }
 
         if(empty($result)){
             $this->response(msg_error('Result not found!!!'));
