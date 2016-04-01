@@ -357,9 +357,16 @@ class Product extends REST_Controller{
             $recommend = $this->product->get_recommened_products();
             $normal = $this->product->get_available_products();
 
+                // check if no products then set to empty
+            if(empty($popular['data'])) $popular=[];
+            else $popular = $popular['data'][0];
+
+            if(empty($newThisMonth['data'])) $newThisMonth=[];
+            else $newThisMonth = $newThisMonth['data'][0];
+
             $products = array(
-                'popular' => $popular['data'][0],
-                'newThisMonth' => $newThisMonth['data'][0],
+                'popular' => $popular,
+                'newThisMonth' => $newThisMonth,
                 'recommend' => $recommend['data'],
                 'normal' => $normal['data']
             );
@@ -382,7 +389,7 @@ class Product extends REST_Controller{
         // check if that profile is exist with accessKey
         $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
         if($profile){
-            $popular = $this->product->get_popular_products();
+            $popular = $this->product->get_popular_products();    
             $this->response($popular);
         }else{
            $this->response(msg_invalidAccessKey());
