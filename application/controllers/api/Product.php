@@ -358,10 +358,10 @@ class Product extends REST_Controller{
             $normal = $this->product->get_available_products();
 
                 // check if no products then set to empty
-            if(empty($popular['data'])) $popular=[];
+            if(empty($popular['data'])) $popular=(object)array();
             else $popular = $popular['data'][0];
 
-            if(empty($newThisMonth['data'])) $newThisMonth=[];
+            if(empty($newThisMonth['data'])) $newThisMonth=(object)array();
             else $newThisMonth = $newThisMonth['data'][0];
 
             $products = array(
