@@ -232,6 +232,7 @@ class ValidationField_model extends CI_Model {
         $template_fields = array(
             'title' => '',
             'startupPrice' => 0,
+            'currencyType' => 1,
             'finalPrice' => -1,
             'ownerId' => '',
             'productId' => '',

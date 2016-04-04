@@ -61,11 +61,13 @@ class BidRoom extends REST_Controller{
             'productId' => $this->post('productId'),
             'startDate' => $this->post('startDate'),
             'endDate' => $this->post('endDate'),
-            'startupPrice' => $this->post('startupPrice'),
+            'startupPrice' => (double)$this->post('startupPrice'),
+            'currencyType' => (int)$this->post('currencyType'),
             'ownerId' => $this->post('ownerId'),
             'title' => $this->post('title')
         );
         $this->_require_parameter($input);
+        if($input['startupPrice'] < 0) $this->response(msg_error('startupPrice must be positive'));
         
         // check if that profile is exist with accessKey
         $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
@@ -106,7 +108,7 @@ class BidRoom extends REST_Controller{
         );
         $this->_require_parameter($input);
         $input['title'] = $this->post('title');
-        $input['startupPrice'] = $this->post('startupPrice');
+        $input['startupPrice'] = (double)$this->post('startupPrice');
         
         // check if that profile is exist with accessKey
         $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
