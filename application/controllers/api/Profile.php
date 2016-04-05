@@ -409,6 +409,31 @@ class Profile extends REST_Controller{
            $this->response(msg_invalidAccessKey());
         }
     }
+        // get subscribers info of a user
+    public function get_subscribers_info_post()
+    {
+        // check require param accessKey
+        $input = array( 
+            'accessKey' => $this->post('accessKey')
+        );
+        $this->_require_parameter($input);
+        
+        // check if that profile is exist with accessKey
+        $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
+        if($profile){
+            $subscriberIds = $profile['subscriber'];
+            $users = array();
+            if(!empty($subscriberIds)){
+                for ($i=0; $i < count($subscriberIds); $i++) { 
+                    $user = $this->profile->get_profile_user_by_id($subscriberIds[$i]);
+                    if($user != null) $users[] = $user['data'];
+                }
+            }
+            $this->response(msg_success($users));
+        }else{
+           $this->response(msg_invalidAccessKey());
+        }
+    }
 
 
 
