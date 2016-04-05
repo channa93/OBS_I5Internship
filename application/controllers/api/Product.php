@@ -227,7 +227,9 @@ class Product extends REST_Controller{
                  $data['userInfo'] = $profile;
                 $this->response(msg_success($data));
             }
-            $this->response(msg_success([])); //no product
+            $data['products'] = array(); // empty aray
+            $data['userInfo'] = $profile;
+            $this->response(msg_success($data)); //no product
         }else{
            $this->response(msg_invalidAccessKey());
         }
