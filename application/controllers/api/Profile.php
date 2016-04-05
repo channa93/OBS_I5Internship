@@ -426,7 +426,7 @@ class Profile extends REST_Controller{
             if(!empty($subscriberIds)){
                 for ($i=0; $i < count($subscriberIds); $i++) { 
                     $user = $this->profile->get_profile_user_by_id($subscriberIds[$i]);  
-                        // filter only userId, displayName and avatar      
+                        // filter only userId, displayName and avatar before rendering to client      
                     if($user != null && !empty($user['data'])){
                         $tmpUser['userId'] = $user['data']['userId'];
                         $tmpUser['displayName'] = $user['data']['displayName'];
