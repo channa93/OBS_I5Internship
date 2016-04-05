@@ -422,11 +422,17 @@ class Profile extends REST_Controller{
         $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
         if($profile){
             $subscriberIds = $profile['subscriber'];
-            $users = array();
+             $users = array();
             if(!empty($subscriberIds)){
                 for ($i=0; $i < count($subscriberIds); $i++) { 
                     $user = $this->profile->get_profile_user_by_id($subscriberIds[$i]);
-                    if($user != null) $users[] = $user['data'];
+                    if($user != null){
+                            // filter only userId, displayName and avatar
+                        $tmpUser['userId'] = $user['data']['userId'];
+                        $tmpUser['displayName'] = $user['data']['displayName'];
+                        $tmpUser['avatar'] = $user['data']['avatar'];
+                        $users[] = $tmpUser;
+                    } 
                 }
             }
             $this->response(msg_success($users));
