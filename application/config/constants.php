@@ -166,4 +166,7 @@ define('LIMIT_MAX_POPULAR_PRODUCT', 10);
 define('DATE_FORMAT', 'Y-m-d H:m:s');
 
 
-
+//BidRoom status
+define('CLOSE', 0);
+define('OPEN', 1);
+define('PENDING', 2);

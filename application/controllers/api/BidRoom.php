@@ -35,7 +35,7 @@ class BidRoom extends REST_Controller{
         $this->response($products);
     }
 
-    public function get_all_bidrooms_post()
+    public function get_all_bidrooms_of_users_post()
     {
         // check require param accessKey
         $input = array( 
@@ -46,7 +46,7 @@ class BidRoom extends REST_Controller{
         // check if that profile is exist with accessKey
         $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
         if($profile){
-            $bidrooms = $this->bidroom->get_all_bidrooms();
+            $bidrooms = $this->bidroom->get_all_bidrooms_of_users();
             $this->response($bidrooms);
         }else{
            $this->response(msg_invalidAccessKey());
