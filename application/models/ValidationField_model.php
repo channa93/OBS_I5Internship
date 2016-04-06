@@ -64,8 +64,8 @@ class ValidationField_model extends CI_Model {
             'wallet' => 100,
             'hits' => 0,
             'status' => ACTIVE,
-            'createdDate' => date("Y-m-d H:m:s A"),
-            'modifiedDate' => date("Y-m-d H:m:s A"),
+            'createdDate' => date(DATE_FORMAT),
+            'modifiedDate' => date(DATE_FORMAT),
             'isEdit' => false         
         );
         if ($data == FALSE) {
@@ -86,8 +86,8 @@ class ValidationField_model extends CI_Model {
             '_id' => new MongoInt32(0),
             'title' => '',
             'description' => '',
-            'createdDate' => date('Y-m-d H:m:s A'),
-            'modifiedDate' => date('Y-m-d H:m:s A')
+            'createdDate' => date(DATE_FORMAT),
+            'modifiedDate' => date(DATE_FORMAT)
         );
         if(!$data){
             return $template_fields;
@@ -108,8 +108,8 @@ class ValidationField_model extends CI_Model {
             '_id' => new MongoInt32(0),
             'title' => '',
             'description' => '',
-            'createdDate' => date('Y-m-d H:m:s A'),
-            'modifiedDate' => date('Y-m-d H:m:s A')
+            'createdDate' => date(DATE_FORMAT),
+            'modifiedDate' => date(DATE_FORMAT)
         );
         if(!$data){
             return $template_fields;
@@ -130,8 +130,8 @@ class ValidationField_model extends CI_Model {
             '_id' => new MongoInt32(0),
             'title' => '',
             'description' => '',
-            'createdDate' => date('Y-m-d H:m:s A'),
-            'modifiedDate' => date('Y-m-d H:m:s A')
+            'createdDate' => date(DATE_FORMAT),
+            'modifiedDate' => date(DATE_FORMAT)
         );
         if(!$data){
             return $template_fields;
@@ -153,8 +153,8 @@ class ValidationField_model extends CI_Model {
             'type' => '',
             'priceCharge' => (double)(0),
             'features' => array(),
-            'createdDate' => date('Y-m-d H:m:s A'),
-            'modifiedDate' => date('Y-m-d H:m:s A')
+            'createdDate' => date(DATE_FORMAT),
+            'modifiedDate' => date(DATE_FORMAT)
         );
         if(!$data){
             return $template_fields;
@@ -175,7 +175,7 @@ class ValidationField_model extends CI_Model {
             'type' => '',
             'amount' => 0,
             'profileId' => '',
-            'createdDate' => date('Y-m-d H:m:s A')
+            'createdDate' => date(DATE_FORMAT)
         );
         if(!$data){
             return $template_fields;
@@ -199,7 +199,7 @@ class ValidationField_model extends CI_Model {
             'productCode' => '',
             'status' => array(
                 'status' => REVIEW,  //1:review, 2:accepted, 3:rejected, 4:available, 5:sold
-                'date' => date('Y-m-d H:m:s'),  //date('Y-m-d H:m:s A') = 2016-03-15 14:03:25 PM
+                'date' => date(DATE_FORMAT),  //date(DATE_FORMAT) = 2016-03-15 14:03:25 PM
                 'reason' => ''   // if status is rejected , then must have reason
             ),
             'type' => new MongoInt32(1),  // 1:simple, 2:event
@@ -213,8 +213,8 @@ class ValidationField_model extends CI_Model {
             'ownerId' => '',
             'isEdit' => false,
             'isDelete' => false,
-            'createdDate' => date('Y-m-d H:m:s'),
-            'modifiedDate' => date('Y-m-d H:m:s')
+            'createdDate' => date(DATE_FORMAT),
+            'modifiedDate' => date(DATE_FORMAT)
         );
         if(!$data){
             return $template_fields;
@@ -237,11 +237,12 @@ class ValidationField_model extends CI_Model {
             'finalPrice' => -1,
             'ownerId' => '',
             'productId' => '',
-            'startDate' => date('Y-m-d H:m:s'),
-            'endDate' => date('Y-m-d H:m:s'),
+            'startDate' => date(DATE_FORMAT),
+            'endDate' => date(DATE_FORMAT),
             'isEdit' => false,
-            'createdDate' => date('Y-m-d H:m:s'),
-            'modifiedDate' => date('Y-m-d H:m:s')
+            'createdDate' => date(DATE_FORMAT),
+            'modifiedDate' => date(DATE_FORMAT),
+            'status' => 2   // 0:close, 1:open, 2:pending . by default it is pending
         );
         if(!$data){
             return $template_fields;
@@ -261,11 +262,11 @@ class ValidationField_model extends CI_Model {
                 'productId' => '',
                 'reportById' => '',
                 'description' => '',
-                'created' => date('Y-m-d H:m:s'),
+                'created' => date(DATE_FORMAT),
                 'type' => 1,  // 1: report product, 2: report user
                 'statusInfo' => array(
                     'status' => REVIEW,
-                    'date'   => date('Y-m-d H:m:s')
+                    'date'   => date(DATE_FORMAT)
                 )    
             );
         }else{  // report user
@@ -273,11 +274,11 @@ class ValidationField_model extends CI_Model {
                 'userId' => '',
                 'reportById' => '',
                 'description' => '',
-                'created' => date('Y-m-d H:m:s'),
+                'created' => date(DATE_FORMAT),
                 'type' => 1,  // 1: report product, 2: report user
                 'statusInfo' => array(
                     'status' => REVIEW,   // //1:review, 2:accepted, 3:rejected 
-                    'date'   => date('Y-m-d H:m:s')
+                    'date'   => date(DATE_FORMAT)
                 )    
             );
         }

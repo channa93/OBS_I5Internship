@@ -125,6 +125,13 @@ class Product extends REST_Controller{
         $input['categoryId'] = (int)$this->post('categoryId');
         $input['currencyType'] = (int)$this->post('currencyType');
         $input['price'] = (double) number_format(doubleval($this->post('price')), 2, '.', '');
+        $input['modifiedDate'] = date(DATE_FORMAT);
+            // change staus proudct to being review by admin when edit
+        $input['status'] = array(
+            'status' => 1 ,  //1:review
+            'date' => date(DATE_FORMAT),  
+            'reason' => ''
+        );
 
         // check if that profile is exist with accessKey
         $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);

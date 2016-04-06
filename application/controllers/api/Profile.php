@@ -103,6 +103,7 @@ class Profile extends REST_Controller{
                 'website' => $this->post('website'),
                 'companyName' => $this->post('companyName')
             );
+            $input['modifiedDate'] = date(DATE_FORMAT);
 
             // filter if null then set to empty string (easy client put in screen)
             foreach ($input['contactInfo'] as $key => $value) {
