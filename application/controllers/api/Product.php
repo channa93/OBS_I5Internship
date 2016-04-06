@@ -242,7 +242,7 @@ class Product extends REST_Controller{
         }
     }
 
-    // get all products of other user by his id , product status is available only
+    // get all products of other user by his id , product status is available + accepted
     public function get_other_user_products_by_user_id_post()
     {
         // check require param accessKey
@@ -257,14 +257,15 @@ class Product extends REST_Controller{
         if($profile){
             
             $products = $this->product->get_other_user_products_by_user_id($input['otherUserId']);
+            $otherUser = $this->profile->get_profile_user_by_id($input['otherUserId']);
             if(!empty($products)){
-                $otherUser = $this->profile->get_profile_user_by_id($input['otherUserId']);
                 $data['userInfo'] = $otherUser['data'];
                 $data['products'] = $products;
                 $this->response(msg_success($data));
             }
-
-            $this->response(msg_success([])); // no product
+            $data['userInfo'] = $otherUser['data'];
+            $data['products'] = [];
+            $this->response(msg_success($data)); // no product
         }else{
            $this->response(msg_invalidAccessKey());
         }

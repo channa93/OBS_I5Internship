@@ -153,8 +153,8 @@ class Product_model extends CI_Model{
       try {
           $products =  $this->mongo_db 
                         ->order_by(array('createdDate' => 'DESC'))
-                        ->where(array('ownerId' => $ownerId , 'isDelete'=>false ,
-                          'status.status' => AVAILABLE))
+                        ->where(array('ownerId' => $ownerId , 'isDelete'=>false)) 
+                        ->where_in('status.status', array(ACCEPTED, AVAILABLE))
                         ->get(TABLE_PRODUCT);
           foreach ($products as $key => $value) {
               $products[$key]['productId'] = $value['_id']->{'$id'};
