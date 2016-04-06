@@ -199,7 +199,8 @@ class ValidationField_model extends CI_Model {
             'productCode' => '',
             'status' => array(
                 'status' => REVIEW,  //1:review, 2:accepted, 3:rejected, 4:available, 5:sold
-                'date' => date('Y-m-d H:m:s A')
+                'date' => date('Y-m-d H:m:s'),  //date('Y-m-d H:m:s A') = 2016-03-15 14:03:25 PM
+                'reason' => ''   // if status is rejected , then must have reason
             ),
             'type' => new MongoInt32(1),  // 1:simple, 2:event
             'description' => '',
@@ -212,8 +213,8 @@ class ValidationField_model extends CI_Model {
             'ownerId' => '',
             'isEdit' => false,
             'isDelete' => false,
-            'createdDate' => date('Y-m-d H:m:s A'),
-            'modifiedDate' => date('Y-m-d H:m:s A')
+            'createdDate' => date('Y-m-d H:m:s'),
+            'modifiedDate' => date('Y-m-d H:m:s')
         );
         if(!$data){
             return $template_fields;
@@ -236,11 +237,11 @@ class ValidationField_model extends CI_Model {
             'finalPrice' => -1,
             'ownerId' => '',
             'productId' => '',
-            'startDate' => date('Y-m-d H:m:s A'),
-            'endDate' => date('Y-m-d H:m:s A'),
+            'startDate' => date('Y-m-d H:m:s'),
+            'endDate' => date('Y-m-d H:m:s'),
             'isEdit' => false,
-            'createdDate' => date('Y-m-d H:m:s A'),
-            'modifiedDate' => date('Y-m-d H:m:s A')
+            'createdDate' => date('Y-m-d H:m:s'),
+            'modifiedDate' => date('Y-m-d H:m:s')
         );
         if(!$data){
             return $template_fields;
@@ -260,11 +261,11 @@ class ValidationField_model extends CI_Model {
                 'productId' => '',
                 'reportById' => '',
                 'description' => '',
-                'created' => date('Y-m-d H:m:s A'),
+                'created' => date('Y-m-d H:m:s'),
                 'type' => 1,  // 1: report product, 2: report user
                 'statusInfo' => array(
                     'status' => REVIEW,
-                    'date'   => date('Y-m-d H:m:s A')
+                    'date'   => date('Y-m-d H:m:s')
                 )    
             );
         }else{  // report user
@@ -272,11 +273,11 @@ class ValidationField_model extends CI_Model {
                 'userId' => '',
                 'reportById' => '',
                 'description' => '',
-                'created' => date('Y-m-d H:m:s A'),
+                'created' => date('Y-m-d H:m:s'),
                 'type' => 1,  // 1: report product, 2: report user
                 'statusInfo' => array(
                     'status' => REVIEW,   // //1:review, 2:accepted, 3:rejected 
-                    'date'   => date('Y-m-d H:m:s A')
+                    'date'   => date('Y-m-d H:m:s')
                 )    
             );
         }

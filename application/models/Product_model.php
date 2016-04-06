@@ -18,7 +18,7 @@ class Product_model extends CI_Model{
 
     public function get_all_products(){
         try {
-            $products = $this->mongo_db->get(TABLE_PRODUCT);
+            $products = $this->mongo_db->order_by(array('createdDate' => 'DESC'))->get(TABLE_PRODUCT);
             foreach ($products as $key => $value) {
                 $products[$key]['productId'] =  $products[$key]['_id']->{'$id'};
                 $products[$key]['totalLikes'] =  count($products[$key]['likerId']);
@@ -58,6 +58,7 @@ class Product_model extends CI_Model{
    public function get_available_products(){
       try {
           $products = $this->mongo_db
+                          ->order_by(array('createdDate' => 'DESC'))
                           ->where(array('isDelete' => false))
                           ->where_in('status.status', array(ACCEPTED, AVAILABLE))
                           ->get(TABLE_PRODUCT);
@@ -113,6 +114,7 @@ class Product_model extends CI_Model{
       $ownerId = $userId;
       try {
           $products =  $this->mongo_db //->select(array('_id','name','imageGallery','likerId'))
+                        ->order_by(array('createdDate' => 'DESC'))
                         ->where(array('ownerId' => $ownerId , 'isDelete'=>false))
                         ->get(TABLE_PRODUCT);
           foreach ($products as $key => $value) {
@@ -131,6 +133,7 @@ class Product_model extends CI_Model{
       $ownerId = $userId;
       try {
           $products =  $this->mongo_db 
+                        ->order_by(array('createdDate' => 'DESC'))
                         ->where(array('ownerId' => $ownerId , 'isDelete'=>false))
                         ->get(TABLE_PRODUCT);
           foreach ($products as $key => $value) {
@@ -149,6 +152,7 @@ class Product_model extends CI_Model{
       $ownerId = $otherUserId;
       try {
           $products =  $this->mongo_db 
+                        ->order_by(array('createdDate' => 'DESC'))
                         ->where(array('ownerId' => $ownerId , 'isDelete'=>false ,
                           'status.status' => AVAILABLE))
                         ->get(TABLE_PRODUCT);
@@ -188,6 +192,7 @@ class Product_model extends CI_Model{
    {
         try {
             $products = $this->mongo_db
+                            ->order_by(array('createdDate' => 'DESC'))
                             ->where(array('isDelete' => false))
                             ->where_in('status.status', array(ACCEPTED, AVAILABLE))
                             ->order_by(array('viewCount' => 'DESC'))
@@ -216,9 +221,9 @@ class Product_model extends CI_Model{
         $lastDay = date('Y-m-t');
         try {
             $products = $this->mongo_db
+                            ->order_by(array('createdDate' => 'DESC'))
                             ->where(array('isDelete' => false))
                             ->where_in('status.status', array(ACCEPTED, AVAILABLE))
-                            ->order_by(array('createdDate' => 'DESC'))
                             ->where_between('createdDate', $firstDay, $lastDay)
                             ->limit(LIMIT_MAX_POPULAR_PRODUCT)
                             ->get(TABLE_PRODUCT);
@@ -268,17 +273,6 @@ class Product_model extends CI_Model{
         } catch (Exception $e) {
             return msg_exception($e->getMessage()); 
         }
-   }
-
-
-
-
-
-
-
-   
-
-   
-   
+   }   
 }
 

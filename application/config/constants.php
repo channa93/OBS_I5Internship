@@ -162,4 +162,8 @@ define('WITHDRAW', 2);
 // Number of max popular product
 define('LIMIT_MAX_POPULAR_PRODUCT', 10);
 
+// date format
+define('DATE_FORMAT', 'Y-m-d H:m:s');
+
+
 

@@ -66,9 +66,11 @@ class BidRoom extends REST_Controller{
             'ownerId' => $this->post('ownerId'),
             'title' => $this->post('title')
         );
+
+        // check require param and validate date, startupPrice
         $this->_require_parameter($input);
-        if($input['startupPrice'] < 0) $this->response(msg_error('startupPrice must be positive'));
-        
+        $this->_check_date_price($input['startDate'], $input['endDate'], $input['startupPrice']); 
+  
         // check if that profile is exist with accessKey
         $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
         if($profile){
@@ -78,6 +80,15 @@ class BidRoom extends REST_Controller{
         }else{
            $this->response(msg_invalidAccessKey());
         }
+    }
+
+     // check if start date and date is valide
+    private function _check_date_price($startDate, $endDate, $startupPrice)
+    {
+        $today = date(DATE_FORMAT);
+        if($today > $startDate) $this->response(msg_error('start date must be in the present'));
+        if($startDate > $endDate) $this->response(msg_error('end date must be earlier than start date'));
+        if($startupPrice < 0) $this->response(msg_error('startupPrice must be positive'));
     }
 
     public function get_bidroom_by_id_post()

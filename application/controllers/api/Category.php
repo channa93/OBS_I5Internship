@@ -53,7 +53,7 @@ class Category extends REST_Controller{
                 $output[$key] = $val;
             }
         }
-        $output['modifiedDate'] = date('Y-m-d H:m:s A');
+        $output['modifiedDate'] = date(DATE_FORMAT);
         return $output;
     }
 
