@@ -134,4 +134,26 @@ class BidRoom_model extends CI_Model{
         
     }
 
+    // get all my bidrooms (all status of bidrooms)
+    public function get_all_my_bidrooms($userId)
+    {
+        try {
+            $bidrooms = $this->mongo_db
+                            ->order_by(array('createdDate' => 'DESC'))
+                            ->where(array('isDelete' => false, 'ownerId' => $userId))
+                            ->where_in('status', array(PENDING, OPEN, CLOSE))
+                            ->get(TABLE_BIDROOM);
+            foreach ($bidrooms as $key => $value) {
+                $bidrooms[$key]['bidroomId'] =  $bidrooms[$key]['_id']->{'$id'};
+                unset($bidrooms[$key]['_id']);
+            }
+            return msg_success($bidrooms);
+        } catch (Exception $e) {
+            return msg_exception($e->getMessage());
+        }
+        
+    }
+
+    
+
 }
