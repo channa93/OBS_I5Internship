@@ -202,4 +202,23 @@ class BidRoom extends REST_Controller{
            $this->response(msg_invalidAccessKey());
         }
     }
+
+    public function get_all_bidrooms_of_a_user_post()
+    {
+        // check require param accessKey
+        $input = array( 
+            'accessKey' => $this->post('accessKey'),
+            'otherUserId' => $this->post('otherUserId'),
+        );
+        $this->_require_parameter($input);
+        
+        // check if that profile is exist with accessKey
+        $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
+        if($profile){
+            $bidrooms = $this->bidroom->get_all_bidrooms_of_a_user($input['otherUserId']);
+            $this->response($bidrooms);
+        }else{
+           $this->response(msg_invalidAccessKey());
+        }
+    }
 }
