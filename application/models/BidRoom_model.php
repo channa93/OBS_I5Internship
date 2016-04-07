@@ -17,9 +17,13 @@ class BidRoom_model extends CI_Model{
         $this->load->model('Profile_model','profile');
     }
 
-    public function get_all_bidrooms(){
+    public function get_all_bidrooms_of_users(){
         try {
-            $bidrooms = $this->mongo_db->get(TABLE_BIDROOM);
+            $bidrooms = $this->mongo_db
+                        ->order_by(array('createdDate' => 'DESC'))
+                        ->where(array('isDelete' => false))
+                        ->where_in('status', array(PENDING, OPEN))
+                        ->get(TABLE_BIDROOM);
             foreach ($bidrooms as $key => $value) {
                 $bidrooms[$key]['bidroomId'] =  $bidrooms[$key]['_id']->{'$id'};
                 unset($bidrooms[$key]['_id']);
@@ -130,4 +134,41 @@ class BidRoom_model extends CI_Model{
         
     }
 
+    // get all my bidrooms (all status of bidrooms)
+    public function get_all_my_bidrooms($userId)
+    {
+        try {
+            $bidrooms = $this->mongo_db
+                            ->order_by(array('createdDate' => 'DESC'))
+                            ->where(array('isDelete' => false, 'ownerId' => $userId))
+                            ->where_in('status', array(PENDING, OPEN, CLOSE))
+                            ->get(TABLE_BIDROOM);
+            foreach ($bidrooms as $key => $value) {
+                $bidrooms[$key]['bidroomId'] =  $bidrooms[$key]['_id']->{'$id'};
+                unset($bidrooms[$key]['_id']);
+            }
+            return msg_success($bidrooms);
+        } catch (Exception $e) {
+            return msg_exception($e->getMessage());
+        }     
+    }
+
+    // get all  bidrooms of a user (PENDIG+OPEN only)
+    public function get_all_bidrooms_of_a_user($otherUserId)
+    {
+        try {
+            $bidrooms = $this->mongo_db
+                            ->order_by(array('createdDate' => 'DESC'))
+                            ->where(array('isDelete' => false, 'ownerId' => $otherUserId))
+                            ->where_in('status', array(PENDING, OPEN))
+                            ->get(TABLE_BIDROOM);
+            foreach ($bidrooms as $key => $value) {
+                $bidrooms[$key]['bidroomId'] =  $bidrooms[$key]['_id']->{'$id'};
+                unset($bidrooms[$key]['_id']);
+            }
+            return msg_success($bidrooms);
+        } catch (Exception $e) {
+            return msg_exception($e->getMessage());
+        }     
+    }
 }

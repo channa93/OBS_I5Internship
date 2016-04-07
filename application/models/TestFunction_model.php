@@ -26,26 +26,53 @@ class TestFunction_model extends CI_Model{
         }
     } 
 
-    public function get_ctrls()
+    // 1st method: using aggregate_group in Mongo_db library
+    // public function get_ctrls() //// get array list of controllers with sorting ascendant
+    // {
+    //     try {
+    //         // $data = $this->mongo_db->select(array('controller'))
+    //             // ->get(TABLE_TEST_FUNCTION);
+
+    //            // aggregate_group(array('fieldToAgregate' => array('fieldRename' => '$oldfield'))) , when select 2 field not correct
+    //         $data = $this->mongo_db->aggregate_group(array('_id' => array('controller' => '$controller')))
+    //                 ->aggregate(TABLE_TEST_FUNCTION);
+
+    //         foreach ($data as $key => $value) {
+    //             $data[$key]['controller'] = $data[$key]['_id']['controller'];
+    //             unset($data[$key]['_id']);
+    //         }
+    //         return msg_success($data);
+    //     } catch (Exception $e) {
+    //         var_dump($e->getMessage());die;
+    //         return msg_exception($e->getMessage());
+    //     }
+    // } 
+
+    // 2nd method: usig simple method
+    public function get_ctrls()  // get array list of controllers with sorting ascendant
     {
         try {
-            // $data = $this->mongo_db->select(array('controller'))
-                // ->get(TABLE_TEST_FUNCTION);
+            $data= $this->mongo_db->order_by(array('controller' => 'ASC'))->get(TABLE_TEST_FUNCTION);
 
-               // aggregate_group(array('fieldToAgregate' => array('fieldRename' => '$oldfield'))) , when select 2 field not correct
-            $data = $this->mongo_db->aggregate_group(array('_id' => array('controller' => '$controller')))
-                    ->aggregate(TABLE_TEST_FUNCTION);
-
-            foreach ($data as $key => $value) {
-                $data[$key]['controller'] = $data[$key]['_id']['controller'];
-                unset($data[$key]['_id']);
+            $responseData = array();
+            for ($i=0; $i < count($data); $i++) { 
+                $controller = $data[$i]['controller'];
+                if(!in_array($controller, $responseData)) // if not exist then push 
+                    array_push($responseData, $controller);
             }
-            return msg_success($data);
+        
+            return msg_success($responseData);
         } catch (Exception $e) {
             var_dump($e->getMessage());die;
             return msg_exception($e->getMessage());
         }
     } 
+    // public function _check_if_exist($array, $controller)
+    // {
+    //     for ($i=0; $i < count($array); $i++) { 
+    //         # code...
+    //     }
+    // }
 
     public function get_funcs($ctrlName){
         try {

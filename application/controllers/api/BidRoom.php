@@ -35,7 +35,7 @@ class BidRoom extends REST_Controller{
         $this->response($products);
     }
 
-    public function get_all_bidrooms_post()
+    public function get_all_bidrooms_of_users_post()
     {
         // check require param accessKey
         $input = array( 
@@ -46,7 +46,7 @@ class BidRoom extends REST_Controller{
         // check if that profile is exist with accessKey
         $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
         if($profile){
-            $bidrooms = $this->bidroom->get_all_bidrooms();
+            $bidrooms = $this->bidroom->get_all_bidrooms_of_users();
             $this->response($bidrooms);
         }else{
            $this->response(msg_invalidAccessKey());
@@ -180,6 +180,43 @@ class BidRoom extends REST_Controller{
         if($profile){
             $bidroom = $this->bidroom->get_bidroom_by_product_id($input['productId']);
             $this->response($bidroom);
+        }else{
+           $this->response(msg_invalidAccessKey());
+        }
+    }
+
+    public function get_all_my_bidrooms_post()
+    {
+        // check require param accessKey
+        $input = array( 
+            'accessKey' => $this->post('accessKey')
+        );
+        $this->_require_parameter($input);
+        
+        // check if that profile is exist with accessKey
+        $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
+        if($profile){
+            $bidrooms = $this->bidroom->get_all_my_bidrooms($profile['userId']);
+            $this->response($bidrooms);
+        }else{
+           $this->response(msg_invalidAccessKey());
+        }
+    }
+
+    public function get_all_bidrooms_of_a_user_post()
+    {
+        // check require param accessKey
+        $input = array( 
+            'accessKey' => $this->post('accessKey'),
+            'otherUserId' => $this->post('otherUserId'),
+        );
+        $this->_require_parameter($input);
+        
+        // check if that profile is exist with accessKey
+        $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
+        if($profile){
+            $bidrooms = $this->bidroom->get_all_bidrooms_of_a_user($input['otherUserId']);
+            $this->response($bidrooms);
         }else{
            $this->response(msg_invalidAccessKey());
         }
