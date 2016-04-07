@@ -87,6 +87,13 @@ class Search extends REST_Controller{
     private function _search_bidroom ($keyword, $limit, $offset){
 
     }
+
+    private function _render_search_result($result, $flag){
+        $tmp = $result;
+        $res['flag'] = $flag;
+        $res['result'] = $tmp;
+        return $res;
+    }
     
     public function index_post(){
 
@@ -118,9 +125,11 @@ class Search extends REST_Controller{
         }
 
         if(empty($result)){
+            //TODO: change message error to message success
             $this->response(msg_error('Result not found!!!'));
         }else {
-            $this->response(msg_success($result));
+            $res = count($result) > 10 ? $this->_render_search_result($result, 1) : $this->_render_search_result($result, 0);
+            $this->response(msg_success($res));
         }
     }
     
