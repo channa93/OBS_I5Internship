@@ -33,7 +33,7 @@ if (!function_exists('filter_param_update')) {   // we dont update if their fiel
             if ($val != '' || $val!=null || $val!=false || !empty($val))
                 $output[$key] = $val;
         }
-        $output['modifiedDate'] = date('Y-m-d H:m:s A');
+        $output['modifiedDate'] = date(DATE_FORMAT);
         $output['isEdit'] = true;
 
         return $output;
@@ -69,6 +69,50 @@ if (!function_exists('authenticate')) {
     }
 
 }
+
+// check if product exist
+if (!function_exists('check_product_exist')) {
+    function check_product_exist($productId){
+        $CI = &get_instance();
+        $CI->load->library('mongo_db');
+
+        try {
+            $product = $CI->mongo_db
+                        ->where(array('_id' => new MongoId($productId)))
+                        ->get(TABLE_PRODUCT);
+
+            if(empty($product)) return false;
+            else return true;
+
+        } catch (Exception $e) {
+            return msg_exception(($e->getMessage()));
+        }     
+    }
+}
+
+// check if bidroom exist
+if (!function_exists('check_bidroom_exist')) {
+    function check_bidroom_exist($bidroomId){
+        $CI = &get_instance();
+        $CI->load->library('mongo_db');
+
+        try {
+            $product = $CI->mongo_db
+                        ->where(array('_id' => new MongoId($bidroomId)))
+                        ->get(TABLE_BIDROOM);
+
+            if(empty($product)) return false;
+            else return true;
+
+        } catch (Exception $e) {
+            return msg_exception(($e->getMessage()));
+        }     
+    }
+}
+
+
+
+
 
 /**
  * used to generate access key for new user

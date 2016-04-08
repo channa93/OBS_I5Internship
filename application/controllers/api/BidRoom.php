@@ -29,6 +29,20 @@ class BidRoom extends REST_Controller{
             $this->response(msg_missingParameter($checked_param));
         }
     }
+
+    private function _check_product_exist($productId) {
+        $success = check_product_exist($productId);
+        if ($success !== TRUE) {
+            $this->response(msg_error('product not exist'));
+        }
+    }
+
+    private function _check_bidroom_exist($bidroomId) {
+        $success = check_bidroom_exist($bidroomId);
+        if ($success !== TRUE) {
+            $this->response(msg_error('bidroom not exist'));
+        }
+    }
     
     public function index_get(){
         $products = $this->bidroom->get_all_bidrooms();
@@ -67,8 +81,9 @@ class BidRoom extends REST_Controller{
             'title' => $this->post('title')
         );
 
-        // check require param and validate date, startupPrice
+        // check require param ,product, validate date, startupPrice
         $this->_require_parameter($input);
+        $this->_check_product_exist($input['productId']);
         $this->_check_date_price($input['startDate'], $input['endDate'], $input['startupPrice']); 
   
         // check if that profile is exist with accessKey
@@ -99,6 +114,7 @@ class BidRoom extends REST_Controller{
             'bidroomId' => $this->post('bidroomId')
         );
         $this->_require_parameter($input);
+        $this->_check_bidroom_exist($input['bidroomId']);
         
         // check if that profile is exist with accessKey
         $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
@@ -118,6 +134,8 @@ class BidRoom extends REST_Controller{
             'bidroomId' => $this->post('bidroomId')
         );
         $this->_require_parameter($input);
+        $this->_check_bidroom_exist($input['bidroomId']);
+
         $input['title'] = $this->post('title');
         $input['startupPrice'] = (double)$this->post('startupPrice');
         
@@ -148,6 +166,8 @@ class BidRoom extends REST_Controller{
             'bidroomId' => $this->post('bidroomId')
         );
         $this->_require_parameter($input);
+        $this->_check_bidroom_exist($input['bidroomId']);
+
         
         // check if that profile is exist with accessKey
         $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);

@@ -12,7 +12,7 @@
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 // Generally will be localhost if you're querying from the machine that Mongo is installed on
-$config['mongo_host'] = "mongodb.onlinebiddingsystem.com";
+$config['mongo_host'] = "188.166.183.25";  // ip server on cloud
 
 // Generally will be 27017 unless you've configured Mongo otherwise
 $config['mongo_port'] = 27017;
@@ -47,4 +47,4 @@ $config['mongo_supress_connect_error'] = TRUE;
 // If you are having problems connecting try changing this to TRUE
 $config['host_db_flag'] = FALSE;
 
-@include_once "mongodb-local.php";
+@include_once "mongodb-local.php";  // overide ip to use local server instead
