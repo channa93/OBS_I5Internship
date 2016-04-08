@@ -32,6 +32,14 @@ class Product extends REST_Controller{
         }
     }
 
+    private function _check_product_exist($productId) {
+        $success = check_product_exist($productId);
+        if ($success !== TRUE) {
+            $this->response(msg_error('product not exist'));
+        }
+    }
+
+
     public function index_get(){
         $products = $this->product->get_all_products();
         $this->response($products);
@@ -439,6 +447,50 @@ class Product extends REST_Controller{
         if($profile){
             $recommend = $this->product->get_recommened_products();
             $this->response($recommend);
+        }else{
+           $this->response(msg_invalidAccessKey());
+        }
+    }
+
+    // like product
+    public function like_product_post()
+    {
+        // check require param accessKey
+        $input = array( 
+            'accessKey' => $this->post('accessKey'),
+            'productId' => $this->post('productId')
+        );
+        $this->_require_parameter($input);
+            // check if product exist
+        $this->_check_product_exist($input['productId']);
+
+            // check if that profile is exist with accessKey
+        $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
+        if($profile){
+            $response = $this->product->like_product($input['productId']);
+            $this->response($response);
+        }else{
+           $this->response(msg_invalidAccessKey());
+        }
+    }
+
+    // unlike product
+    public function unlike_product_post()
+    {
+        // check require param accessKey
+        $input = array( 
+            'accessKey' => $this->post('accessKey'),
+            'productId' => $this->post('productId')
+        );
+        $this->_require_parameter($input);
+            // check if product exist
+        $this->_check_product_exist($input['productId']);
+
+            // check if that profile is exist with accessKey
+        $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
+        if($profile){
+            $response = $this->product->unlike_product($input['productId']);
+            $this->response($response);
         }else{
            $this->response(msg_invalidAccessKey());
         }

@@ -273,6 +273,46 @@ class Product_model extends CI_Model{
         } catch (Exception $e) {
             return msg_exception($e->getMessage()); 
         }
+   }
+
+    // like product
+   public function like_product($productId)
+   {
+        try {
+            // push user id into likerId array
+            $success = $this->mongo_db->where(array('_id' => new MongoId($productId))) 
+                        ->push(array('likerId' => $productId)) 
+                        ->update(TABLE_PRODUCT);
+            if($success){
+                $product = $this->product->get_product_by_id($productId);
+                return $product;
+            }else{
+                return msg_error('unable to like product');
+            }
+            return msg_success($products);
+        } catch (Exception $e) {
+            return msg_exception($e->getMessage()); 
+        }
+   }
+
+   // unlike product
+   public function unlike_product($productId)
+   {
+        try {
+            // push user id into likerId array
+            $success = $this->mongo_db->where(array('_id' => new MongoId($productId))) 
+                        ->pull('likerId' , $productId)
+                        ->update(TABLE_PRODUCT);
+            if($success){
+                $product = $this->product->get_product_by_id($productId);
+                return $product;
+            }else{
+                return msg_error('unable to like product');
+            }
+            return msg_success($products);
+        } catch (Exception $e) {
+            return msg_exception($e->getMessage()); 
+        }
    }   
 }
 
