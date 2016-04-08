@@ -108,7 +108,7 @@ class BidRoom_model extends CI_Model{
            $bidroom = $this->get_bidroom_by_id($bidroomId);
            if($bidroom['code']==1){
                 $this->mongo_db->where(array('_id'=>new MongoId($bidroomId)))->delete(TABLE_BIDROOM);
-                return msg_success('');
+                return msg_success([]);
 
            }else{
                 return msg_error('bidroom does not exist');

@@ -90,6 +90,30 @@ if (!function_exists('check_product_exist')) {
     }
 }
 
+// check if bidroom exist
+if (!function_exists('check_bidroom_exist')) {
+    function check_bidroom_exist($bidroomId){
+        $CI = &get_instance();
+        $CI->load->library('mongo_db');
+
+        try {
+            $product = $CI->mongo_db
+                        ->where(array('_id' => new MongoId($bidroomId)))
+                        ->get(TABLE_BIDROOM);
+
+            if(empty($product)) return false;
+            else return true;
+
+        } catch (Exception $e) {
+            return msg_exception(($e->getMessage()));
+        }     
+    }
+}
+
+
+
+
+
 /**
  * used to generate access key for new user
  * @param  [string] $id   

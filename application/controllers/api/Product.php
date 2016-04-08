@@ -127,6 +127,8 @@ class Product extends REST_Controller{
             'productId' => $this->post('productId')
         );
         $this->_require_parameter($input);
+        $this->_check_product_exist($input['productId']);
+
         $input['description'] = $this->post('description');
         $input['name'] = $this->post('name');
         $input['productCode'] = $this->post('productCode');
@@ -172,6 +174,7 @@ class Product extends REST_Controller{
             'productId' => $this->post('productId')
         );
         $this->_require_parameter($input);
+        $this->_check_product_exist($input['productId']);
 
         // check if that profile is exist with accessKey
         $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
@@ -322,6 +325,7 @@ class Product extends REST_Controller{
             'productId' => $this->post('productId')
         );
         $this->_require_parameter($input);
+        $this->_check_product_exist($input['productId']);
         
         // check if that profile is exist with accessKey
         $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
@@ -345,6 +349,7 @@ class Product extends REST_Controller{
             'productId' => $this->post('productId')
         );
         $this->_require_parameter($input);
+        $this->_check_product_exist($input['productId']);
         
         // check if that profile is exist with accessKey
         $profile = $this->profile->get_profile_user_by_accessKey($input['accessKey']);
