@@ -88,10 +88,23 @@ class Search extends REST_Controller{
 
     }
 
-    private function _render_search_result($result){
-        $tmp = $result;
-        $res['countResult'] = count($tmp);
-        $res['result'] = $tmp;
+    private function _render_search_result($result, $type){
+        if($type == 1){
+            $tmp = 'profileId';
+        } else if($type==2){
+            $tmp = 'productId';
+        } else {
+            $tmp = 'bidRoomId';
+        }
+
+        $res['countResult'] = count($result);
+        $res['result'] = array();
+        for($i=0; $i<count($result); $i++){
+            $id = $result[$i]['_id']->{'$id'};
+            unset($result[$i]['_id']);
+            $res['result'][$i] = $result[$i];
+            $res['result'][$i][$tmp] = $id;
+        }
         return $res;
     }
     
@@ -115,16 +128,18 @@ class Search extends REST_Controller{
         $offset = $this->post('offset');
 
         if($filter == null){
-            if($searchType == 0){
+            if($searchType == 1){
                 $result = $this->_search_user($keyword, $limit, $offset);
-            } else if($searchType == 1){
-                $result = $this->_search_product($keyword, $limit, $offset);
+                $res = $this->_render_search_result($result, 1);
             } else if($searchType == 2){
+                $result = $this->_search_product($keyword, $limit, $offset);
+                $res = $this->_render_search_result($result, 2);
+            } else if($searchType == 3){
                 $result = $this->_search_bidroom($keyword, $limit, $offset);
+                $res = $this->_render_search_result($result, 3);
             }
         }
 
-        $res = $this->_render_search_result($result);
         $this->response(msg_success($res));
     }
     
