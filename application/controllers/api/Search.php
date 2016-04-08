@@ -88,9 +88,9 @@ class Search extends REST_Controller{
 
     }
 
-    private function _render_search_result($result, $flag){
+    private function _render_search_result($result){
         $tmp = $result;
-        $res['flag'] = $flag;
+        $res['countResult'] = count($tmp);
         $res['result'] = $tmp;
         return $res;
     }
@@ -124,13 +124,8 @@ class Search extends REST_Controller{
             }
         }
 
-        if(empty($result)){
-            //TODO: change message error to message success
-            $this->response(msg_error('Result not found!!!'));
-        }else {
-            $res = count($result) > 10 ? $this->_render_search_result($result, 1) : $this->_render_search_result($result, 0);
-            $this->response(msg_success($res));
-        }
+        $res = $this->_render_search_result($result);
+        $this->response(msg_success($res));
     }
     
 
