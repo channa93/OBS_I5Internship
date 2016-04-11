@@ -242,7 +242,7 @@ class ValidationField_model extends CI_Model {
             'isEdit' => false,
             'createdDate' => date(DATE_FORMAT),
             'modifiedDate' => date(DATE_FORMAT),
-            'status' => PENDING,   // 0:close, 1:open, 2:pending . by default it is pending
+            'status' => OPEN,   // 0:close, 1:open, 2:pending . by default it is pending
             'isDelete' => false
         );
         if(!$data){
